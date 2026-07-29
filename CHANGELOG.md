@@ -2,6 +2,16 @@
 
 All notable changes to Liquid Notes are documented in this file. The project follows [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] - 2026-07-30
+
+### Changed
+
+- Shortened Ribbon hover recovery to 70 ms and removed the lingering background fade.
+- Grouped top navigation and view actions into restrained Xcode-style floating capsules.
+- Added pill-shaped active root tabs and title focus states with macOS system-blue accents.
+- Reworked folder marks as gray Xcode-inspired outline icons in light and dark appearances.
+- Refined reduced-motion, reduced-transparency, high-contrast, no-blur, and mobile fallbacks.
+
 ## [1.0.0] - 2026-07-29
 
 ### Added
@@ -15,4 +25,5 @@ All notable changes to Liquid Notes are documented in this file. The project fol
 - Reduced-motion, increased-contrast, reduced-transparency, and solid-surface fallbacks.
 - Dependency-free browser-rendered validation and a safe local installation script.
 
+[1.0.1]: https://github.com/qxbyte/liquid-notes/releases/tag/1.0.1
 [1.0.0]: https://github.com/qxbyte/liquid-notes/releases/tag/1.0.0

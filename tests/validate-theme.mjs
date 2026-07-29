@@ -11,7 +11,7 @@ const read = (name) => readFile(path.join(root, name), "utf8");
 const manifest = JSON.parse(await read("manifest.json"));
 assert.deepEqual(manifest, {
   name: "Liquid Notes",
-  version: "1.0.0",
+  version: "1.0.1",
   minAppVersion: "1.12.7",
   author: "qxbyte",
   authorUrl: "https://github.com/qxbyte",
