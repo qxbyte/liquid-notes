@@ -416,6 +416,16 @@ textarea:focus-visible,
   box-shadow: var(--ln-shadow-floating-control);
 }
 
+.workspace .mod-root .workspace-tab-header {
+  border-radius: var(--ln-radius-pill);
+}
+
+.workspace .mod-root .workspace-tab-header.is-active {
+  background-color: var(--ln-surface-strong);
+  border-color: var(--ln-border);
+  box-shadow: var(--ln-shadow-floating-control);
+}
+
 .workspace-tab-header-inner {
   gap: 6px;
   padding: 0 3px;

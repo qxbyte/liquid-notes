@@ -2,11 +2,20 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <style>
+      .workspace .mod-root .workspace-tab-header {
+        border-radius: 7px;
+      }
+
+      .workspace .mod-root .workspace-tab-header.is-active {
+        box-shadow: 0 0 0 1px rgba(60, 60, 67, 0.14);
+      }
+    </style>
     <link rel="stylesheet" href="../theme.css">
     <title>Liquid Notes CSS fixture</title>
   </head>
   <body>
-    <main id="light-root" class="theme-light">
+    <main id="light-root" class="theme-light workspace">
       <header class="titlebar">
         <button id="light-toolbar-button" class="clickable-icon" autofocus aria-label="Sidebar">◫</button>
       </header>
@@ -15,9 +24,11 @@
           <button id="light-ribbon-button" class="clickable-icon side-dock-ribbon-action" aria-label="Graph">◇</button>
         </div>
       </nav>
-      <div class="workspace-tab-header-container">
-        <div class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
-        <div class="workspace-tab-header"><span class="workspace-tab-header-inner-title">Inactive</span></div>
+      <div class="workspace-split mod-root">
+        <div class="workspace-tab-header-container">
+          <div class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
+          <div class="workspace-tab-header"><span class="workspace-tab-header-inner-title">Inactive</span></div>
+        </div>
       </div>
       <div class="view-header">
         <div id="light-nav-group" class="view-header-nav-buttons">
@@ -74,15 +85,17 @@
       <div class="modal"><div class="modal-title">Modal</div></div>
       <div class="tooltip">Tooltip</div>
     </main>
-    <main id="dark-root" class="theme-dark">
+    <main id="dark-root" class="theme-dark workspace">
       <header class="titlebar"><button class="clickable-icon" aria-label="Sidebar">◫</button></header>
       <nav class="workspace-ribbon mod-left">
         <div class="side-dock-actions">
           <button id="dark-ribbon-button" class="clickable-icon side-dock-ribbon-action" aria-label="Graph">◇</button>
         </div>
       </nav>
-      <div class="workspace-tab-header-container">
-        <div class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
+      <div class="workspace-split mod-root">
+        <div class="workspace-tab-header-container">
+          <div class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
+        </div>
       </div>
       <div class="view-header">
         <div id="dark-nav-group" class="view-header-nav-buttons">
@@ -253,7 +266,7 @@
       expectNotTransparent("#dark-root .titlebar");
       expectNotTransparent("#light-root .workspace-tab-header.is-active");
       expectNotTransparent("#dark-root .workspace-tab-header.is-active");
-      expectMinPixels("#light-root .workspace-tab-header.is-active", "borderRadius", 14);
+      expectMinPixels("#light-root .mod-root .workspace-tab-header.is-active", "borderRadius", 14);
       for (const selector of ["#light-nav-group", "#light-view-actions", "#dark-nav-group", "#dark-view-actions"]) {
         expectNotTransparent(selector);
         expectMinPixels(selector, "borderRadius", 14);
