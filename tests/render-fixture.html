@@ -19,6 +19,19 @@
         <div class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
         <div class="workspace-tab-header"><span class="workspace-tab-header-inner-title">Inactive</span></div>
       </div>
+      <div class="view-header">
+        <div id="light-nav-group" class="view-header-nav-buttons">
+          <button id="light-nav-back" class="clickable-icon" aria-disabled="true">←</button>
+          <button class="clickable-icon" aria-disabled="true">→</button>
+        </div>
+        <div class="view-header-title-container">
+          <div id="light-view-title" class="view-header-title" tabindex="0">Liquid Notes</div>
+        </div>
+        <div id="light-view-actions" class="view-actions">
+          <button id="light-view-active" class="clickable-icon is-active">⌘</button>
+          <button class="clickable-icon">•••</button>
+        </div>
+      </div>
       <section id="light-canvas" class="workspace-leaf-content">
         <div class="markdown-source-view mod-cm6">
           <div id="live-preview-heading" class="cm-line HyperMD-header HyperMD-header-1">Live Preview heading</div>
@@ -70,6 +83,19 @@
       </nav>
       <div class="workspace-tab-header-container">
         <div class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
+      </div>
+      <div class="view-header">
+        <div id="dark-nav-group" class="view-header-nav-buttons">
+          <button class="clickable-icon" aria-disabled="true">←</button>
+          <button class="clickable-icon" aria-disabled="true">→</button>
+        </div>
+        <div class="view-header-title-container">
+          <div id="dark-view-title" class="view-header-title" tabindex="0">Liquid Notes</div>
+        </div>
+        <div id="dark-view-actions" class="view-actions">
+          <button id="dark-view-active" class="clickable-icon is-active">⌘</button>
+          <button class="clickable-icon">•••</button>
+        </div>
       </div>
       <section id="dark-canvas" class="workspace-leaf-content">
         <div class="markdown-source-view mod-cm6">
@@ -209,7 +235,19 @@
       expectNotTransparent("#dark-root .titlebar");
       expectNotTransparent("#light-root .workspace-tab-header.is-active");
       expectNotTransparent("#dark-root .workspace-tab-header.is-active");
-      expectMinPixels("#light-root .workspace-tab-header.is-active", "borderRadius", 7);
+      expectMinPixels("#light-root .workspace-tab-header.is-active", "borderRadius", 14);
+      for (const selector of ["#light-nav-group", "#light-view-actions", "#dark-nav-group", "#dark-view-actions"]) {
+        expectNotTransparent(selector);
+        expectMinPixels(selector, "borderRadius", 14);
+        expectMinPixels(selector, "borderTopWidth", 1);
+        expectStyleExcludes(selector, "boxShadow", "none");
+      }
+      expectMinPixels("#light-view-title", "borderRadius", 14);
+      expectMinPixels("#dark-view-title", "borderRadius", 14);
+      expectStyle("#light-view-active", "color", "rgb(0, 122, 255)");
+      expectStyle("#dark-view-active", "color", "rgb(10, 132, 255)");
+      expectStyle("#light-view-active", "transform", "none");
+      expectStyleIncludes("#light-nav-back", "boxShadow", "inset");
       expectNotTransparent("#light-root .nav-file-title.is-active");
       expectMinPixels("#light-root .nav-file-title.is-active", "borderRadius", 7);
       expectMinPixels("#light-root .search-input-container input", "borderRadius", 7);
@@ -288,6 +326,8 @@
       if (matchMedia("(prefers-reduced-transparency: reduce)").matches) {
         for (const selector of [
           "#light-sidebar",
+          "#light-nav-group",
+          "#light-view-actions",
           "#light-root .canvas-controls",
           "#light-root .canvas-card-menu",
           "#light-root .graph-controls",

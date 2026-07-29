@@ -35,6 +35,8 @@ assert.ok(reducedTransparencyStart >= 0 && reducedMotionStart > reducedTranspare
 const reducedTransparencyBlock = css.slice(reducedTransparencyStart, reducedMotionStart);
 for (const selector of [
   ".workspace-split.mod-left-split",
+  ".view-header-nav-buttons",
+  ".view-actions",
   ".canvas-controls",
   ".canvas-card-menu",
   ".graph-controls",
@@ -45,6 +47,20 @@ for (const selector of [
 }
 assert.match(reducedTransparencyBlock, /-webkit-backdrop-filter:\s*none;/, "Reduced-transparency fallback must disable WebKit blur");
 assert.match(reducedTransparencyBlock, /(?:^|\n)\s*backdrop-filter:\s*none;/, "Reduced-transparency fallback must disable standard blur");
+
+const unsupportedBlurStart = css.indexOf("@supports not ((backdrop-filter: blur(1px))");
+const reducedTransparencyMediaStart = css.indexOf("@media (prefers-reduced-transparency: reduce)", unsupportedBlurStart);
+assert.ok(unsupportedBlurStart >= 0 && reducedTransparencyMediaStart > unsupportedBlurStart, "Unsupported-blur fallback block must exist");
+const unsupportedBlurBlock = css.slice(unsupportedBlurStart, reducedTransparencyMediaStart);
+for (const selector of [".view-header-nav-buttons", ".view-actions"]) {
+  assert.ok(unsupportedBlurBlock.includes(selector), `Unsupported-blur fallback must cover ${selector}`);
+}
+
+const contrastStart = css.indexOf("@media (prefers-contrast: more)");
+const compactLayoutStart = css.indexOf("@media (max-width: 800px)", contrastStart);
+assert.ok(contrastStart >= 0 && compactLayoutStart > contrastStart, "High-contrast block must exist");
+const contrastBlock = css.slice(contrastStart, compactLayoutStart);
+assert.match(contrastBlock, /--ln-control-group-border:\s*currentColor;/, "High contrast must strengthen control-group borders");
 
 const chromeCandidates = [
   process.env.CHROME_BIN,
