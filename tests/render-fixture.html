@@ -10,7 +10,11 @@
       <header class="titlebar">
         <button id="light-toolbar-button" class="clickable-icon" autofocus aria-label="Sidebar">◫</button>
       </header>
-      <nav class="workspace-ribbon">Ribbon</nav>
+      <nav class="workspace-ribbon mod-left">
+        <div class="side-dock-actions">
+          <button id="light-ribbon-button" class="clickable-icon side-dock-ribbon-action" aria-label="Graph">◇</button>
+        </div>
+      </nav>
       <div class="workspace-tab-header-container">
         <div class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
         <div class="workspace-tab-header"><span class="workspace-tab-header-inner-title">Inactive</span></div>
@@ -59,7 +63,11 @@
     </main>
     <main id="dark-root" class="theme-dark">
       <header class="titlebar"><button class="clickable-icon" aria-label="Sidebar">◫</button></header>
-      <nav class="workspace-ribbon">Ribbon</nav>
+      <nav class="workspace-ribbon mod-left">
+        <div class="side-dock-actions">
+          <button id="dark-ribbon-button" class="clickable-icon side-dock-ribbon-action" aria-label="Graph">◇</button>
+        </div>
+      </nav>
       <div class="workspace-tab-header-container">
         <div class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
       </div>
@@ -163,6 +171,11 @@
         if (!actual.includes(expected.toLowerCase())) failures.push(`${selector} ${property}: expected to include ${expected}, got ${actual}`);
       };
 
+      const expectStyleExcludes = (selector, property, unexpected) => {
+        const actual = style(selector)[property].toLowerCase();
+        if (actual.includes(unexpected.toLowerCase())) failures.push(`${selector} ${property}: expected not to include ${unexpected}, got ${actual}`);
+      };
+
       const expectStyle = (selector, property, expected) => {
         const actual = style(selector)[property].toLowerCase();
         if (actual !== expected.toLowerCase()) failures.push(`${selector} ${property}: expected ${expected}, got ${actual}`);
@@ -202,6 +215,12 @@
       expectMinPixels("#light-root .search-input-container input", "borderRadius", 7);
       expectMinPixels("#light-toolbar-button", "width", 28);
       expectMinPixels("#light-toolbar-button", "height", 28);
+      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        expectStyleIncludes("#light-ribbon-button", "transitionDuration", "0.07s");
+      }
+      expectStyleExcludes("#light-ribbon-button", "transitionProperty", "background-color");
+      expectStyleExcludes("#light-ribbon-button", "transitionProperty", "box-shadow");
+      expectStyle("#light-ribbon-button", "backgroundColor", "rgba(0, 0, 0, 0)");
       if (!focusTarget.matches(":focus-visible")) failures.push("#light-toolbar-button: expected :focus-visible after keyboard-style autofocus");
       expectMinPixels("#light-toolbar-button", "outlineWidth", 2);
       expectNotTransparent("#light-root .status-bar");
@@ -263,6 +282,7 @@
 
       if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
         expectStyleIncludes("#light-toolbar-button", "transitionDuration", "0s");
+        expectStyleIncludes("#light-ribbon-button", "transitionDuration", "0s");
       }
 
       if (matchMedia("(prefers-reduced-transparency: reduce)").matches) {
