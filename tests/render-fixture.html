@@ -17,6 +17,7 @@
       </div>
       <section id="light-canvas" class="workspace-leaf-content">
         <div class="markdown-source-view mod-cm6">
+          <div id="live-preview-heading" class="cm-line HyperMD-header HyperMD-header-1">Live Preview heading</div>
           <div class="cm-line cm-hmd-codeblock">
             <span class="cm-keyword">struct</span>
             <span class="cm-type">SettingsView</span>
@@ -37,13 +38,13 @@
           <pre><code><span class="token keyword">struct</span> <span class="token class-name">SettingsView</span> <span class="token function">body</span> <span class="token string">"Notes"</span> <span class="token number">26</span> <span class="token property">accentColor</span> <span class="token comment">// comment</span></code></pre>
         </article>
         <section class="bases-view"><div class="bases-table-container">Bases</div></section>
-        <section class="canvas-wrapper"><div class="canvas-node"><div class="canvas-node-container">Canvas</div></div><div class="canvas-controls">Controls</div></section>
+        <section class="canvas-wrapper"><div class="canvas-node"><div class="canvas-node-container">Canvas</div></div><div class="canvas-controls">Controls</div><div class="canvas-card-menu">Card menu</div></section>
         <section class="graph-view"><div class="graph-controls">Graph</div></section>
         <section class="pdf-container"><div class="pdf-toolbar">PDF</div></section>
         <section class="vertical-tab-header"><div class="vertical-tab-nav-item is-active">Appearance</div></section>
         <section class="setting-item">
           <div class="setting-item-info"><div class="setting-item-name">Theme</div></div>
-          <div class="setting-item-control"><input type="text" value="Liquid Notes"><button id="mobile-action">Apply</button></div>
+          <div class="setting-item-control"><input type="text" value="Liquid Notes"><button id="mobile-action">Apply</button><button id="light-cta" class="mod-cta">Install</button></div>
         </section>
       </section>
       <aside id="light-sidebar" class="workspace-split mod-left-split">
@@ -88,7 +89,7 @@
         <section class="graph-view"><div class="graph-controls">Graph</div></section>
         <section class="pdf-container"><div class="pdf-toolbar">PDF</div></section>
         <section class="vertical-tab-header"><div class="vertical-tab-nav-item is-active">Appearance</div></section>
-        <section class="setting-item"><div class="setting-item-control"><input type="text" value="Liquid Notes"><button>Apply</button></div></section>
+        <section class="setting-item"><div class="setting-item-control"><input type="text" value="Liquid Notes"><button>Apply</button><button id="dark-cta" class="mod-cta">Install</button></div></section>
       </section>
       <aside id="dark-sidebar" class="workspace-split mod-left-split">
         <div class="nav-file-title is-active">File</div>
@@ -102,6 +103,8 @@
     <output id="test-results">pending</output>
     <script>
       const failures = [];
+      const focusTarget = document.querySelector("#light-toolbar-button");
+      focusTarget.focus();
 
       const style = (selector) => getComputedStyle(document.querySelector(selector));
       const custom = (selector, property) => style(selector).getPropertyValue(property).trim().toLowerCase();
@@ -134,6 +137,11 @@
         if (!Number.isFinite(actual) || actual < minimum) failures.push(`${selector} ${property}: expected at least ${minimum}px, got ${style(selector)[property]}`);
       };
 
+      const expectMaxPixels = (selector, property, maximum) => {
+        const actual = Number.parseFloat(style(selector)[property]);
+        if (!Number.isFinite(actual) || actual > maximum) failures.push(`${selector} ${property}: expected at most ${maximum}px, got ${style(selector)[property]}`);
+      };
+
       const expectSameColor = (leftSelector, rightSelector) => {
         const left = style(leftSelector).color;
         const right = style(rightSelector).color;
@@ -155,6 +163,28 @@
         if (!actual.includes(expected.toLowerCase())) failures.push(`${selector} ${property}: expected to include ${expected}, got ${actual}`);
       };
 
+      const expectStyle = (selector, property, expected) => {
+        const actual = style(selector)[property].toLowerCase();
+        if (actual !== expected.toLowerCase()) failures.push(`${selector} ${property}: expected ${expected}, got ${actual}`);
+      };
+
+      const relativeLuminance = (cssColor) => {
+        const channels = cssColor.match(/[\d.]+/g)?.slice(0, 3).map(Number);
+        if (!channels || channels.length !== 3) return Number.NaN;
+        const linear = channels.map((channel) => {
+          const value = channel / 255;
+          return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+        });
+        return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+      };
+
+      const expectContrast = (selector, minimum) => {
+        const foreground = relativeLuminance(style(selector).color);
+        const background = relativeLuminance(style(selector).backgroundColor);
+        const ratio = (Math.max(foreground, background) + 0.05) / (Math.min(foreground, background) + 0.05);
+        if (!Number.isFinite(ratio) || ratio < minimum) failures.push(`${selector} contrast: expected at least ${minimum}:1, got ${ratio.toFixed(2)}:1`);
+      };
+
       expectCustom("#light-root", "--interactive-accent", "#007aff");
       expectCustom("#dark-root", "--interactive-accent", "#0a84ff");
       expectCustomIncludes("#light-root", "--font-interface-theme", "-apple-system");
@@ -172,12 +202,17 @@
       expectMinPixels("#light-root .search-input-container input", "borderRadius", 7);
       expectMinPixels("#light-toolbar-button", "width", 28);
       expectMinPixels("#light-toolbar-button", "height", 28);
+      if (!focusTarget.matches(":focus-visible")) failures.push("#light-toolbar-button: expected :focus-visible after keyboard-style autofocus");
+      expectMinPixels("#light-toolbar-button", "outlineWidth", 2);
       expectNotTransparent("#light-root .status-bar");
       expectNotTransparent("#light-root .menu");
       expectNotTransparent("#light-root .modal");
       expectNotTransparent("#light-root .tooltip");
       expectNotTransparent("#light-root .markdown-reading-view");
       expectNotTransparent("#dark-root .markdown-reading-view");
+      expectMaxPixels("#live-preview-heading", "marginTop", 0);
+      expectMaxPixels("#live-preview-heading", "marginBottom", 0);
+      expectMinPixels("#live-preview-heading", "paddingTop", 1);
       expectFontIncludes("#light-root pre code", "SF Mono");
       expectFontIncludes("#dark-root .cm-hmd-codeblock", "SF Mono");
       expectDistinctColors([
@@ -211,10 +246,14 @@
       expectNotTransparent("#light-root .canvas-controls");
       expectNotTransparent("#light-root .graph-controls");
       expectNotTransparent("#light-root .pdf-toolbar");
+      expectStyle("#light-root .canvas-node-container", "backdropFilter", "none");
+      expectStyleIncludes("#light-root .canvas-controls", "backdropFilter", "blur(");
       expectNotTransparent("#light-root .vertical-tab-header");
       expectNotTransparent("#light-root .setting-item-control input");
       expectNotTransparent("#light-root .setting-item-control button");
       expectMinPixels("#light-root .setting-item-control input", "borderTopWidth", 1);
+      expectContrast("#light-cta", 4.5);
+      expectContrast("#dark-cta", 4.5);
 
       if (window.innerWidth <= 800) {
         expectMinPixels("#light-toolbar-button", "height", 44);
@@ -226,7 +265,26 @@
         expectStyleIncludes("#light-toolbar-button", "transitionDuration", "0s");
       }
 
-      document.querySelector("#test-results").textContent = JSON.stringify({ failures });
+      if (matchMedia("(prefers-reduced-transparency: reduce)").matches) {
+        for (const selector of [
+          "#light-sidebar",
+          "#light-root .canvas-controls",
+          "#light-root .canvas-card-menu",
+          "#light-root .graph-controls",
+          "#light-root .pdf-toolbar",
+        ]) {
+          expectStyle(selector, "backdropFilter", "none");
+          expectNotTransparent(selector);
+        }
+      }
+
+      document.querySelector("#test-results").textContent = JSON.stringify({
+        failures,
+        media: {
+          reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,
+          reducedTransparency: matchMedia("(prefers-reduced-transparency: reduce)").matches,
+        },
+      });
     </script>
   </body>
 </html>

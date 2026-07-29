@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { access, mkdir, mkdtemp, readFile, rm } from "node:fs/promises";
+import { access, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -22,6 +22,29 @@ assert.doesNotMatch(css, /@import|https?:\/\//i, "theme.css must not load remote
 assert.doesNotMatch(css, /\/Users\/|[A-Z]:\\/i, "theme.css must not contain private paths");
 assert.doesNotMatch(css, /!important/i, "theme.css must remain user-overridable without !important");
 assert.doesNotMatch(css, /:has\(/i, "theme.css must avoid expensive :has() selectors");
+for (const hoverRule of css.matchAll(/([^{}]*:hover[^{}]*)\{([^{}]*)\}/g)) {
+  assert.doesNotMatch(
+    hoverRule[2],
+    /\b(?:width|height|min-width|max-width|min-height|max-height|margin(?:-[\w-]+)?|padding(?:-[\w-]+)?|border(?:-[\w-]+)?-width)\s*:/i,
+    `Hover rule must not change layout geometry: ${hoverRule[1].trim()}`,
+  );
+}
+const reducedTransparencyStart = css.indexOf("@media (prefers-reduced-transparency: reduce)");
+const reducedMotionStart = css.indexOf("@media (prefers-reduced-motion: reduce)", reducedTransparencyStart);
+assert.ok(reducedTransparencyStart >= 0 && reducedMotionStart > reducedTransparencyStart, "Reduced-transparency fallback block must exist");
+const reducedTransparencyBlock = css.slice(reducedTransparencyStart, reducedMotionStart);
+for (const selector of [
+  ".workspace-split.mod-left-split",
+  ".canvas-controls",
+  ".canvas-card-menu",
+  ".graph-controls",
+  ".pdf-toolbar",
+  ".pdf-sidebar-container",
+]) {
+  assert.ok(reducedTransparencyBlock.includes(selector), `Reduced-transparency fallback must cover ${selector}`);
+}
+assert.match(reducedTransparencyBlock, /-webkit-backdrop-filter:\s*none;/, "Reduced-transparency fallback must disable WebKit blur");
+assert.match(reducedTransparencyBlock, /(?:^|\n)\s*backdrop-filter:\s*none;/, "Reduced-transparency fallback must disable standard blur");
 
 const chromeCandidates = [
   process.env.CHROME_BIN,
@@ -65,6 +88,7 @@ const runBrowserFixture = (label, extraArguments = []) => {
   assert.ok(resultMatch, `${label}: Browser fixture did not emit test results`);
   const computedStyleResult = JSON.parse(resultMatch[1].replaceAll("&quot;", "\"").replaceAll("&amp;", "&"));
   assert.deepEqual(computedStyleResult.failures, [], `${label}\n${computedStyleResult.failures.join("\n")}`);
+  if (label === "reduced motion") assert.equal(computedStyleResult.media.reducedMotion, true, "Chrome must emulate reduced motion");
 };
 
 runBrowserFixture("desktop", ["--window-size=1280,900"]);
@@ -109,6 +133,12 @@ for (const imageFile of [
 const storeScreenshot = await readFile(path.join(root, "screenshot.png"));
 assert.equal(storeScreenshot.readUInt32BE(16), 512, "screenshot.png must be 512 pixels wide");
 assert.equal(storeScreenshot.readUInt32BE(20), 288, "screenshot.png must be 288 pixels high");
+for (const imageFile of ["assets/preview-light.png", "assets/preview-dark.png", "assets/code-dark.png"]) {
+  const image = await readFile(path.join(root, imageFile));
+  assert.equal(image.readUInt32BE(16), 912, `${imageFile} must be 912 pixels wide`);
+  assert.equal(image.readUInt32BE(20), 513, `${imageFile} must be 513 pixels high`);
+  assert.ok(image.byteLength >= 32 * 1024, `${imageFile} must retain enough detail for README presentation`);
+}
 
 const installerFixture = await mkdtemp(path.join(tmpdir(), "liquid-notes-installer-"));
 try {
@@ -138,6 +168,47 @@ try {
     await read("theme.css"),
     "Installed CSS must match the repository",
   );
+
+  const installedTheme = path.join(validVault, ".obsidian/themes/Liquid Notes/theme.css");
+  await writeFile(installedTheme, "local customization\n");
+  const protectedInstall = spawnSync("bash", [path.join(root, "scripts/install-local.sh"), validVault], {
+    cwd: root,
+    encoding: "utf8",
+  });
+  assert.notEqual(protectedInstall.status, 0, "Installer must not overwrite a customized existing theme by default");
+  assert.match(protectedInstall.stderr, /already exists with different content/i, "Installer must explain how to update an existing theme");
+  assert.equal(await readFile(installedTheme, "utf8"), "local customization\n", "Rejected install must preserve customized theme CSS");
+
+  const forcedInstall = spawnSync("bash", [path.join(root, "scripts/install-local.sh"), "--force", validVault], {
+    cwd: root,
+    encoding: "utf8",
+  });
+  assert.equal(forcedInstall.status, 0, forcedInstall.stderr || "--force must update an existing theme intentionally");
+  assert.equal(await readFile(installedTheme, "utf8"), await read("theme.css"), "--force must install current theme CSS");
+
+  const outsideTarget = path.join(installerFixture, "outside-theme.css");
+  await writeFile(outsideTarget, "outside file\n");
+  await rm(installedTheme);
+  await symlink(outsideTarget, installedTheme);
+  const symlinkInstall = spawnSync("bash", [path.join(root, "scripts/install-local.sh"), "--force", validVault], {
+    cwd: root,
+    encoding: "utf8",
+  });
+  assert.notEqual(symlinkInstall.status, 0, "Installer must reject symlinked release targets");
+  assert.match(symlinkInstall.stderr, /symbolic link/i, "Symlink rejection must explain the unsafe target");
+  assert.equal(await readFile(outsideTarget, "utf8"), "outside file\n", "Installer must not follow a symlink outside the theme directory");
+
+  const linkedThemesVault = path.join(installerFixture, "linked-themes-vault");
+  const outsideThemes = path.join(installerFixture, "outside-themes");
+  await mkdir(path.join(linkedThemesVault, ".obsidian"), { recursive: true });
+  await mkdir(outsideThemes);
+  await symlink(outsideThemes, path.join(linkedThemesVault, ".obsidian/themes"));
+  const linkedThemesInstall = spawnSync("bash", [path.join(root, "scripts/install-local.sh"), linkedThemesVault], {
+    cwd: root,
+    encoding: "utf8",
+  });
+  assert.notEqual(linkedThemesInstall.status, 0, "Installer must reject a symlinked themes directory");
+  assert.match(linkedThemesInstall.stderr, /symbolic link/i, "Themes-directory rejection must explain the unsafe target");
 } finally {
   await rm(installerFixture, { recursive: true, force: true });
 }

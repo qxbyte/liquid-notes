@@ -47,6 +47,12 @@ Download this repository, then run:
 ./scripts/install-local.sh "/path/to/your/vault"
 ```
 
+The installer leaves a locally customized `Liquid Notes` folder untouched. After reviewing the differences, update it explicitly with:
+
+```bash
+./scripts/install-local.sh --force "/path/to/your/vault"
+```
+
 Alternatively, copy `manifest.json` and `theme.css` into:
 
 ```text
@@ -96,6 +102,12 @@ Liquid Notes 是一款以 macOS Liquid Glass 为灵感的 Obsidian 社区主题�
 
 ```bash
 ./scripts/install-local.sh "/你的/vault/路径"
+```
+
+如果目标位置已有内容不同的 `Liquid Notes`，安装器会保留本地版本并退出；确认差异后可使用 `--force` 明确更新：
+
+```bash
+./scripts/install-local.sh --force "/你的/vault/路径"
 ```
 
 也可以把 `manifest.json` 和 `theme.css` 复制到：

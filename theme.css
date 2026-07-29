@@ -31,6 +31,7 @@ body {
 
   --ln-accent: #007aff;
   --ln-accent-hover: #006ee6;
+  --ln-accent-cta: #0062cc;
   --ln-canvas: #ffffff;
   --ln-canvas-alt: #f7f7f9;
   --ln-surface: rgba(255, 255, 255, 0.78);
@@ -111,6 +112,7 @@ body {
 
   --ln-accent: #0a84ff;
   --ln-accent-hover: #409cff;
+  --ln-accent-cta: #0068d9;
   --ln-canvas: #1c1c1e;
   --ln-canvas-alt: #232326;
   --ln-surface: rgba(44, 44, 46, 0.78);
@@ -595,21 +597,30 @@ input[type="search"]:focus {
   text-wrap: balance;
 }
 
-.markdown-rendered h1,
-.HyperMD-header-1 {
+.markdown-rendered h1 {
   margin-block: 1.5em 0.58em;
 }
 
-.markdown-rendered h2,
-.HyperMD-header-2 {
+.HyperMD-header-1 {
+  padding-block: 1.5em 0.58em;
+}
+
+.markdown-rendered h2 {
   margin-block: 1.45em 0.56em;
+}
+
+.HyperMD-header-2 {
+  padding-top: 1.45em;
   padding-bottom: 0.22em;
   border-bottom: 1px solid var(--ln-separator);
 }
 
-.markdown-rendered :is(h3, h4, h5, h6),
-:is(.HyperMD-header-3, .HyperMD-header-4, .HyperMD-header-5, .HyperMD-header-6) {
+.markdown-rendered :is(h3, h4, h5, h6) {
   margin-block: 1.3em 0.5em;
+}
+
+:is(.HyperMD-header-3, .HyperMD-header-4, .HyperMD-header-5, .HyperMD-header-6) {
+  padding-block: 1.3em 0.5em;
 }
 
 .markdown-rendered p,
@@ -986,7 +997,12 @@ a.tag {
 }
 
 .canvas-node-container,
-.canvas-group-label,
+.canvas-group-label {
+  border: 1px solid var(--ln-border);
+  background-color: var(--background-primary-alt);
+  box-shadow: var(--ln-shadow-control);
+}
+
 .canvas-controls,
 .canvas-card-menu,
 .graph-controls {
@@ -1171,8 +1187,12 @@ button.mod-warning {
 button.mod-cta {
   border-color: transparent;
   color: var(--text-on-accent);
-  background-color: var(--ln-accent);
+  background-color: var(--ln-accent-cta);
   box-shadow: 0 1px 2px color-mix(in srgb, var(--ln-accent) 34%, transparent), inset 0 1px rgba(255, 255, 255, 0.22);
+}
+
+.setting-item-control button.mod-cta:hover {
+  background-color: color-mix(in srgb, var(--ln-accent-cta) 90%, #000000);
 }
 
 button.mod-warning {
@@ -1262,8 +1282,10 @@ kbd,
   .modal,
   .tooltip,
   .canvas-controls,
+  .canvas-card-menu,
   .graph-controls,
-  .pdf-toolbar {
+  .pdf-toolbar,
+  .pdf-sidebar-container {
     -webkit-backdrop-filter: saturate(1.2) blur(14px);
     backdrop-filter: saturate(1.2) blur(14px);
   }
@@ -1285,7 +1307,12 @@ kbd,
   .status-bar,
   .menu,
   .modal,
-  .tooltip {
+  .tooltip,
+  .canvas-controls,
+  .canvas-card-menu,
+  .graph-controls,
+  .pdf-toolbar,
+  .pdf-sidebar-container {
     background-color: var(--background-secondary-alt);
   }
 }
@@ -1298,7 +1325,12 @@ kbd,
   .status-bar,
   .menu,
   .modal,
-  .tooltip {
+  .tooltip,
+  .canvas-controls,
+  .canvas-card-menu,
+  .graph-controls,
+  .pdf-toolbar,
+  .pdf-sidebar-container {
     background-color: var(--background-secondary-alt);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
