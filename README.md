@@ -23,6 +23,8 @@ Liquid Notes is a calm, macOS-inspired Liquid Glass theme for [Obsidian](https:/
 | --- | --- |
 | ![Light appearance](assets/preview-light.png) | ![Dark appearance](assets/preview-dark.png) |
 
+![Xcode-inspired multicolor code in dark appearance](assets/code-dark.png)
+
 ## Requirements
 
 - Obsidian 1.12.7 or newer.

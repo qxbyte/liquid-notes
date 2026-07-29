@@ -90,6 +90,20 @@ for (const requiredFile of [
   await access(path.join(root, requiredFile));
 }
 
+for (const imageFile of [
+  "screenshot.png",
+  "assets/preview-light.png",
+  "assets/preview-dark.png",
+  "assets/code-dark.png",
+]) {
+  const image = await readFile(path.join(root, imageFile));
+  assert.deepEqual(
+    [...image.subarray(0, 8)],
+    [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a],
+    `${imageFile} must be an actual PNG file`,
+  );
+}
+
 const installerFixture = await mkdtemp(path.join(tmpdir(), "liquid-notes-installer-"));
 try {
   const invalidVault = path.join(installerFixture, "not-a-vault");
