@@ -28,36 +28,45 @@ const chromeCandidates = [
   "chromium",
 ].filter(Boolean);
 
-let browserResult;
 let chromeBinary;
-for (const candidate of chromeCandidates) {
-  const result = spawnSync(candidate, [
-    "--headless=new",
-    "--no-sandbox",
-    "--disable-gpu",
-    "--disable-background-networking",
-    "--disable-extensions",
-    "--no-first-run",
-    "--no-default-browser-check",
-    "--dump-dom",
-    `file://${path.join(root, "tests/render-fixture.html")}`,
-  ], { encoding: "utf8", maxBuffer: 10 * 1024 * 1024, timeout: 10_000 });
+const runBrowserFixture = (label, extraArguments = []) => {
+  let browserResult;
+  const candidates = chromeBinary ? [chromeBinary] : chromeCandidates;
 
-  if (!result.error || result.error.code !== "ENOENT") {
-    browserResult = result;
-    chromeBinary = candidate;
-    break;
+  for (const candidate of candidates) {
+    const result = spawnSync(candidate, [
+      "--headless=new",
+      "--no-sandbox",
+      "--disable-gpu",
+      "--disable-background-networking",
+      "--disable-extensions",
+      "--no-first-run",
+      "--no-default-browser-check",
+      ...extraArguments,
+      "--dump-dom",
+      `file://${path.join(root, "tests/render-fixture.html")}`,
+    ], { encoding: "utf8", maxBuffer: 10 * 1024 * 1024, timeout: 10_000 });
+
+    if (!result.error || result.error.code !== "ENOENT") {
+      browserResult = result;
+      chromeBinary = candidate;
+      break;
+    }
   }
-}
 
-assert.ok(chromeBinary, "A Chrome or Chromium binary is required for computed-style tests");
-assert.notEqual(browserResult.error?.code, "ETIMEDOUT", "Chrome computed-style fixture timed out");
-assert.equal(browserResult.status, 0, browserResult.stderr || "Chrome fixture failed");
+  assert.ok(chromeBinary, "A Chrome or Chromium binary is required for computed-style tests");
+  assert.notEqual(browserResult.error?.code, "ETIMEDOUT", `${label}: Chrome computed-style fixture timed out`);
+  assert.equal(browserResult.status, 0, browserResult.stderr || `${label}: Chrome fixture failed`);
 
-const resultMatch = browserResult.stdout.match(/<output id="test-results">([^<]+)<\/output>/);
-assert.ok(resultMatch, "Browser fixture did not emit test results");
-const computedStyleResult = JSON.parse(resultMatch[1].replaceAll("&quot;", "\"").replaceAll("&amp;", "&"));
-assert.deepEqual(computedStyleResult.failures, [], computedStyleResult.failures.join("\n"));
+  const resultMatch = browserResult.stdout.match(/<output id="test-results">([^<]+)<\/output>/);
+  assert.ok(resultMatch, `${label}: Browser fixture did not emit test results`);
+  const computedStyleResult = JSON.parse(resultMatch[1].replaceAll("&quot;", "\"").replaceAll("&amp;", "&"));
+  assert.deepEqual(computedStyleResult.failures, [], `${label}\n${computedStyleResult.failures.join("\n")}`);
+};
+
+runBrowserFixture("desktop", ["--window-size=1280,900"]);
+runBrowserFixture("mobile", ["--window-size=760,900"]);
+runBrowserFixture("reduced motion", ["--force-prefers-reduced-motion"]);
 
 const thirdPartyNotices = await read("THIRD_PARTY_NOTICES.md");
 assert.match(thirdPartyNotices, /Lucide/i, "Icon notice must identify Lucide");

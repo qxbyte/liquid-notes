@@ -929,6 +929,354 @@ a.tag {
   box-shadow: var(--ln-highlight);
 }
 
+/* Bases ------------------------------------------------------------------- */
+
+.bases-view {
+  color: var(--text-normal);
+  background-color: var(--background-primary);
+}
+
+.bases-toolbar,
+.bases-view .view-header,
+.bases-table-container,
+.bases-cards-container {
+  border-color: var(--ln-border);
+  background-color: var(--background-primary);
+}
+
+.bases-table-container {
+  overflow: hidden;
+  border: 1px solid var(--ln-border);
+  border-radius: var(--ln-radius-md);
+}
+
+.bases-table-header,
+.bases-thead,
+.bases-table-container thead {
+  color: var(--text-muted);
+  background-color: var(--background-primary-alt);
+  font-size: 0.86em;
+  font-weight: 620;
+}
+
+.bases-table-container :is(th, td),
+.bases-td,
+.bases-th {
+  border-color: var(--ln-separator);
+}
+
+.bases-table-container tbody tr:hover,
+.bases-tr:hover {
+  background-color: var(--background-modifier-hover);
+}
+
+.bases-card,
+.bases-cards-container > .bases-card {
+  border: 1px solid var(--ln-border);
+  border-radius: var(--ln-radius-md);
+  background-color: var(--background-primary-alt);
+  box-shadow: var(--ln-shadow-control);
+}
+
+/* Canvas and graph -------------------------------------------------------- */
+
+.canvas-wrapper,
+.graph-view {
+  background-color: var(--background-primary);
+}
+
+.canvas-node-container,
+.canvas-group-label,
+.canvas-controls,
+.canvas-card-menu,
+.graph-controls {
+  border: 1px solid var(--ln-border);
+  background-color: var(--ln-surface-strong);
+  box-shadow: var(--ln-shadow);
+  -webkit-backdrop-filter: saturate(1.25) blur(var(--ln-blur));
+  backdrop-filter: saturate(1.25) blur(var(--ln-blur));
+}
+
+.canvas-node-container {
+  overflow: hidden;
+  border-radius: var(--ln-radius-md);
+}
+
+.canvas-node.is-selected .canvas-node-container {
+  border-color: var(--ln-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ln-accent) 18%, transparent), var(--ln-shadow);
+}
+
+.canvas-controls,
+.canvas-card-menu,
+.graph-controls {
+  padding: 4px;
+  border-radius: var(--ln-radius-md);
+}
+
+.canvas-control-item,
+.graph-controls .clickable-icon {
+  border-radius: var(--ln-radius-sm);
+}
+
+.graph-control-section {
+  border-bottom-color: var(--ln-separator);
+}
+
+.graph-control-section-header {
+  color: var(--text-normal);
+  font-weight: 620;
+}
+
+/* PDF --------------------------------------------------------------------- */
+
+.pdf-container,
+.pdf-viewer-container,
+.pdfViewer {
+  background-color: var(--background-primary-alt);
+}
+
+.pdf-toolbar,
+.pdf-sidebar-container {
+  border-color: var(--ln-border);
+  background-color: var(--ln-surface-strong);
+  box-shadow: var(--ln-highlight);
+  -webkit-backdrop-filter: saturate(1.25) blur(var(--ln-blur));
+  backdrop-filter: saturate(1.25) blur(var(--ln-blur));
+}
+
+.pdf-toolbar {
+  min-height: 38px;
+  padding: 4px 7px;
+}
+
+.pdf-page {
+  border-radius: 2px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.16);
+}
+
+/* Settings and form controls --------------------------------------------- */
+
+.vertical-tab-header,
+.vertical-tab-content-container {
+  border-color: var(--ln-separator);
+  background-color: var(--ln-sidebar);
+}
+
+.vertical-tab-header {
+  border-inline-end: 1px solid var(--ln-separator);
+}
+
+.vertical-tab-nav-item {
+  min-height: 31px;
+  margin-block: 1px;
+  padding: 6px 9px;
+  border-radius: var(--ln-radius-sm);
+  color: var(--text-muted);
+  transition: color var(--ln-transition), background-color var(--ln-transition);
+}
+
+.vertical-tab-nav-item:hover {
+  color: var(--text-normal);
+  background-color: var(--background-modifier-hover);
+}
+
+.vertical-tab-nav-item.is-active {
+  color: var(--text-normal);
+  background-color: var(--ln-control-active);
+}
+
+.vertical-tab-content {
+  background-color: var(--background-primary);
+}
+
+.setting-item {
+  padding-block: 13px;
+  border-top-color: var(--ln-separator);
+}
+
+.setting-item-name {
+  color: var(--text-normal);
+  font-weight: 570;
+}
+
+.setting-item-description {
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.setting-item-control {
+  gap: 7px;
+}
+
+input:not([type="checkbox"]):not([type="radio"]),
+textarea,
+select,
+.dropdown {
+  min-height: 30px;
+  border: 1px solid var(--ln-border);
+  border-radius: var(--ln-radius-sm);
+  color: var(--text-normal);
+  background-color: var(--ln-control);
+  box-shadow: var(--ln-shadow-control);
+  font-family: var(--font-interface-theme);
+  transition:
+    background-color var(--ln-transition),
+    border-color var(--ln-transition),
+    box-shadow var(--ln-transition);
+}
+
+input:not([type="checkbox"]):not([type="radio"]):hover,
+textarea:hover,
+select:hover,
+.dropdown:hover {
+  background-color: var(--ln-control-hover);
+}
+
+input:not([type="checkbox"]):not([type="radio"]):focus,
+textarea:focus,
+select:focus,
+.dropdown:focus {
+  border-color: color-mix(in srgb, var(--ln-accent) 62%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ln-accent) 16%, transparent), var(--ln-shadow-control);
+}
+
+.setting-item-control button,
+button.mod-cta,
+button.mod-warning {
+  min-height: 30px;
+  padding: 5px 13px;
+  border: 1px solid var(--ln-border);
+  border-radius: var(--ln-radius-pill);
+  color: var(--text-normal);
+  background-color: var(--ln-control);
+  box-shadow: var(--ln-shadow-control);
+  font-family: var(--font-interface-theme);
+  font-weight: 560;
+  transition:
+    color var(--ln-transition),
+    background-color var(--ln-transition),
+    border-color var(--ln-transition),
+    transform var(--ln-transition);
+}
+
+.setting-item-control button:hover {
+  background-color: var(--ln-control-hover);
+}
+
+.setting-item-control button:active {
+  transform: scale(0.97);
+}
+
+button.mod-cta {
+  border-color: transparent;
+  color: var(--text-on-accent);
+  background-color: var(--ln-accent);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--ln-accent) 34%, transparent), inset 0 1px rgba(255, 255, 255, 0.22);
+}
+
+button.mod-warning {
+  border-color: transparent;
+  color: #ffffff;
+  background-color: #ff453a;
+}
+
+.checkbox-container {
+  width: 38px;
+  height: 22px;
+  border: 1px solid var(--ln-border);
+  background-color: var(--ln-control);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.checkbox-container::after {
+  width: 18px;
+  height: 18px;
+  margin: 1px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.24);
+}
+
+.checkbox-container.is-enabled {
+  border-color: var(--ln-accent);
+  background-color: var(--ln-accent);
+}
+
+input[type="range"] {
+  accent-color: var(--ln-accent);
+}
+
+.hotkey-list-container .setting-command-hotkeys,
+kbd,
+.setting-hotkey {
+  border: 1px solid var(--ln-border);
+  border-radius: var(--ln-radius-xs);
+  color: var(--text-muted);
+  background-color: var(--ln-control);
+  box-shadow: 0 1px 0 var(--ln-border);
+  font-family: var(--font-interface-theme);
+  font-size: 0.82em;
+}
+
+/* Accessibility and compact layouts -------------------------------------- */
+
+@media (prefers-contrast: more) {
+  .theme-light,
+  .theme-dark {
+    --ln-border: currentColor;
+    --ln-border-hover: currentColor;
+    --ln-separator: color-mix(in srgb, currentColor 44%, transparent);
+  }
+
+  .clickable-icon:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    outline-width: 3px;
+  }
+}
+
+@media (max-width: 800px) {
+  body {
+    --ln-radius-md: 10px;
+    --ln-radius-lg: 14px;
+    --ln-blur: 14px;
+  }
+
+  .clickable-icon,
+  .setting-item-control button,
+  .vertical-tab-nav-item,
+  .menu-item {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .workspace-split.mod-left-split,
+  .workspace-split.mod-right-split,
+  .titlebar,
+  .workspace-tab-header-container,
+  .status-bar,
+  .menu,
+  .modal,
+  .tooltip,
+  .canvas-controls,
+  .graph-controls,
+  .pdf-toolbar {
+    -webkit-backdrop-filter: saturate(1.2) blur(14px);
+    backdrop-filter: saturate(1.2) blur(14px);
+  }
+
+  .modal {
+    border-radius: var(--ln-radius-lg) var(--ln-radius-lg) 0 0;
+  }
+
+  .setting-item {
+    gap: 10px;
+  }
+}
+
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .workspace-split.mod-left-split,
   .workspace-split.mod-right-split,

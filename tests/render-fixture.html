@@ -36,6 +36,15 @@
           <input class="task-list-item-checkbox" type="checkbox" checked>
           <pre><code><span class="token keyword">struct</span> <span class="token class-name">SettingsView</span> <span class="token function">body</span> <span class="token string">"Notes"</span> <span class="token number">26</span> <span class="token property">accentColor</span> <span class="token comment">// comment</span></code></pre>
         </article>
+        <section class="bases-view"><div class="bases-table-container">Bases</div></section>
+        <section class="canvas-wrapper"><div class="canvas-node"><div class="canvas-node-container">Canvas</div></div><div class="canvas-controls">Controls</div></section>
+        <section class="graph-view"><div class="graph-controls">Graph</div></section>
+        <section class="pdf-container"><div class="pdf-toolbar">PDF</div></section>
+        <section class="vertical-tab-header"><div class="vertical-tab-nav-item is-active">Appearance</div></section>
+        <section class="setting-item">
+          <div class="setting-item-info"><div class="setting-item-name">Theme</div></div>
+          <div class="setting-item-control"><input type="text" value="Liquid Notes"><button id="mobile-action">Apply</button></div>
+        </section>
       </section>
       <aside id="light-sidebar" class="workspace-split mod-left-split">
         <div class="nav-folder-title is-active">Folder</div>
@@ -74,6 +83,12 @@
           <input class="task-list-item-checkbox" type="checkbox">
           <pre><code><span class="token keyword">struct</span> <span class="token class-name">SettingsView</span> <span class="token function">body</span> <span class="token string">"Notes"</span> <span class="token number">26</span> <span class="token property">accentColor</span> <span class="token comment">// comment</span></code></pre>
         </article>
+        <section class="bases-view"><div class="bases-table-container">Bases</div></section>
+        <section class="canvas-wrapper"><div class="canvas-node"><div class="canvas-node-container">Canvas</div></div><div class="canvas-controls">Controls</div></section>
+        <section class="graph-view"><div class="graph-controls">Graph</div></section>
+        <section class="pdf-container"><div class="pdf-toolbar">PDF</div></section>
+        <section class="vertical-tab-header"><div class="vertical-tab-nav-item is-active">Appearance</div></section>
+        <section class="setting-item"><div class="setting-item-control"><input type="text" value="Liquid Notes"><button>Apply</button></div></section>
       </section>
       <aside id="dark-sidebar" class="workspace-split mod-left-split">
         <div class="nav-file-title is-active">File</div>
@@ -135,6 +150,11 @@
         if (!actual.includes(expected.toLowerCase())) failures.push(`${selector} font-family: expected ${expected}, got ${actual}`);
       };
 
+      const expectStyleIncludes = (selector, property, expected) => {
+        const actual = style(selector)[property].toLowerCase();
+        if (!actual.includes(expected.toLowerCase())) failures.push(`${selector} ${property}: expected to include ${expected}, got ${actual}`);
+      };
+
       expectCustom("#light-root", "--interactive-accent", "#007aff");
       expectCustom("#dark-root", "--interactive-accent", "#0a84ff");
       expectCustomIncludes("#light-root", "--font-interface-theme", "-apple-system");
@@ -185,6 +205,26 @@
       expectSameColor("#light-root .cm-number", "#light-root .token.number");
       expectSameColor("#light-root .cm-property", "#light-root .token.property");
       expectSameColor("#light-root .cm-comment", "#light-root .token.comment");
+      expectNotTransparent("#light-root .bases-view");
+      expectNotTransparent("#dark-root .bases-view");
+      expectNotTransparent("#light-root .canvas-node-container");
+      expectNotTransparent("#light-root .canvas-controls");
+      expectNotTransparent("#light-root .graph-controls");
+      expectNotTransparent("#light-root .pdf-toolbar");
+      expectNotTransparent("#light-root .vertical-tab-header");
+      expectNotTransparent("#light-root .setting-item-control input");
+      expectNotTransparent("#light-root .setting-item-control button");
+      expectMinPixels("#light-root .setting-item-control input", "borderTopWidth", 1);
+
+      if (window.innerWidth <= 800) {
+        expectMinPixels("#light-toolbar-button", "height", 44);
+        expectMinPixels("#mobile-action", "height", 44);
+        expectStyleIncludes("#light-sidebar", "backdropFilter", "blur(14px)");
+      }
+
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        expectStyleIncludes("#light-toolbar-button", "transitionDuration", "0s");
+      }
 
       document.querySelector("#test-results").textContent = JSON.stringify({ failures });
     </script>
