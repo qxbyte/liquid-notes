@@ -15,7 +15,28 @@
         <div class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
         <div class="workspace-tab-header"><span class="workspace-tab-header-inner-title">Inactive</span></div>
       </div>
-      <section id="light-canvas" class="workspace-leaf-content">Light canvas</section>
+      <section id="light-canvas" class="workspace-leaf-content">
+        <div class="markdown-source-view mod-cm6">
+          <div class="cm-line cm-hmd-codeblock">
+            <span class="cm-keyword">struct</span>
+            <span class="cm-type">SettingsView</span>
+            <span class="cm-def">body</span>
+            <span class="cm-string">"Notes"</span>
+            <span class="cm-number">26</span>
+            <span class="cm-property">accentColor</span>
+            <span class="cm-comment">// comment</span>
+          </div>
+        </div>
+        <article class="markdown-reading-view markdown-rendered">
+          <h1>Liquid Notes</h1>
+          <p>Readable <a href="#">link</a> and <code>inline code</code>.</p>
+          <blockquote>Quote</blockquote>
+          <div class="callout" data-callout="info"><div class="callout-title">Information</div></div>
+          <table><thead><tr><th>Name</th></tr></thead><tbody><tr><td>Value</td></tr></tbody></table>
+          <input class="task-list-item-checkbox" type="checkbox" checked>
+          <pre><code><span class="token keyword">struct</span> <span class="token class-name">SettingsView</span> <span class="token function">body</span> <span class="token string">"Notes"</span> <span class="token number">26</span> <span class="token property">accentColor</span> <span class="token comment">// comment</span></code></pre>
+        </article>
+      </section>
       <aside id="light-sidebar" class="workspace-split mod-left-split">
         <div class="nav-folder-title is-active">Folder</div>
         <div class="nav-file-title is-active">File</div>
@@ -32,7 +53,28 @@
       <div class="workspace-tab-header-container">
         <div class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
       </div>
-      <section id="dark-canvas" class="workspace-leaf-content">Dark canvas</section>
+      <section id="dark-canvas" class="workspace-leaf-content">
+        <div class="markdown-source-view mod-cm6">
+          <div class="cm-line cm-hmd-codeblock">
+            <span class="cm-keyword">struct</span>
+            <span class="cm-type">SettingsView</span>
+            <span class="cm-def">body</span>
+            <span class="cm-string">"Notes"</span>
+            <span class="cm-number">26</span>
+            <span class="cm-property">accentColor</span>
+            <span class="cm-comment">// comment</span>
+          </div>
+        </div>
+        <article class="markdown-reading-view markdown-rendered">
+          <h1>Liquid Notes</h1>
+          <p>Readable <a href="#">link</a> and <code>inline code</code>.</p>
+          <blockquote>Quote</blockquote>
+          <div class="callout" data-callout="info"><div class="callout-title">Information</div></div>
+          <table><thead><tr><th>Name</th></tr></thead><tbody><tr><td>Value</td></tr></tbody></table>
+          <input class="task-list-item-checkbox" type="checkbox">
+          <pre><code><span class="token keyword">struct</span> <span class="token class-name">SettingsView</span> <span class="token function">body</span> <span class="token string">"Notes"</span> <span class="token number">26</span> <span class="token property">accentColor</span> <span class="token comment">// comment</span></code></pre>
+        </article>
+      </section>
       <aside id="dark-sidebar" class="workspace-split mod-left-split">
         <div class="nav-file-title is-active">File</div>
         <div class="search-input-container"><input type="search" placeholder="Search"></div>
@@ -77,6 +119,22 @@
         if (!Number.isFinite(actual) || actual < minimum) failures.push(`${selector} ${property}: expected at least ${minimum}px, got ${style(selector)[property]}`);
       };
 
+      const expectSameColor = (leftSelector, rightSelector) => {
+        const left = style(leftSelector).color;
+        const right = style(rightSelector).color;
+        if (left !== right) failures.push(`${leftSelector} and ${rightSelector}: expected equal colors, got ${left} and ${right}`);
+      };
+
+      const expectDistinctColors = (selectors) => {
+        const colors = selectors.map((selector) => style(selector).color);
+        if (new Set(colors).size !== colors.length) failures.push(`Expected distinct colors for ${selectors.join(", ")}; got ${colors.join(", ")}`);
+      };
+
+      const expectFontIncludes = (selector, expected) => {
+        const actual = style(selector).fontFamily.toLowerCase();
+        if (!actual.includes(expected.toLowerCase())) failures.push(`${selector} font-family: expected ${expected}, got ${actual}`);
+      };
+
       expectCustom("#light-root", "--interactive-accent", "#007aff");
       expectCustom("#dark-root", "--interactive-accent", "#0a84ff");
       expectCustomIncludes("#light-root", "--font-interface-theme", "-apple-system");
@@ -98,6 +156,35 @@
       expectNotTransparent("#light-root .menu");
       expectNotTransparent("#light-root .modal");
       expectNotTransparent("#light-root .tooltip");
+      expectNotTransparent("#light-root .markdown-reading-view");
+      expectNotTransparent("#dark-root .markdown-reading-view");
+      expectFontIncludes("#light-root pre code", "SF Mono");
+      expectFontIncludes("#dark-root .cm-hmd-codeblock", "SF Mono");
+      expectDistinctColors([
+        "#light-root .cm-keyword",
+        "#light-root .cm-type",
+        "#light-root .cm-def",
+        "#light-root .cm-string",
+        "#light-root .cm-number",
+        "#light-root .cm-property",
+        "#light-root .cm-comment",
+      ]);
+      expectDistinctColors([
+        "#dark-root .token.keyword",
+        "#dark-root .token.class-name",
+        "#dark-root .token.function",
+        "#dark-root .token.string",
+        "#dark-root .token.number",
+        "#dark-root .token.property",
+        "#dark-root .token.comment",
+      ]);
+      expectSameColor("#light-root .cm-keyword", "#light-root .token.keyword");
+      expectSameColor("#light-root .cm-type", "#light-root .token.class-name");
+      expectSameColor("#light-root .cm-def", "#light-root .token.function");
+      expectSameColor("#light-root .cm-string", "#light-root .token.string");
+      expectSameColor("#light-root .cm-number", "#light-root .token.number");
+      expectSameColor("#light-root .cm-property", "#light-root .token.property");
+      expectSameColor("#light-root .cm-comment", "#light-root .token.comment");
 
       document.querySelector("#test-results").textContent = JSON.stringify({ failures });
     </script>

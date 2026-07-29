@@ -63,4 +63,12 @@ const thirdPartyNotices = await read("THIRD_PARTY_NOTICES.md");
 assert.match(thirdPartyNotices, /Lucide/i, "Icon notice must identify Lucide");
 assert.match(thirdPartyNotices, /ISC License/i, "Icon notice must include Lucide's ISC license");
 
+const showcase = await read("tests/showcase.md");
+for (const language of ["swift", "javascript", "python", "json", "bash", "css"]) {
+  assert.ok(showcase.includes("```" + language), `Showcase must include a ${language} code fence`);
+}
+for (const markdownPattern of [/^# /m, /^> /m, /^- \[[ x]\] /m, /^\|.+\|$/m, /^> \[!\w+\]/m]) {
+  assert.match(showcase, markdownPattern, `Showcase is missing Markdown fixture ${markdownPattern}`);
+}
+
 console.log("Theme validation passed");
