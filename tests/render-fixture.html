@@ -65,7 +65,7 @@
         </section>
       </section>
       <aside id="light-sidebar" class="workspace-split mod-left-split">
-        <div class="nav-folder-title is-active">Folder</div>
+        <div class="nav-folder-title is-active"><span class="nav-folder-title-content">Folder</span></div>
         <div class="nav-file-title is-active">File</div>
         <div class="search-input-container"><input type="search" placeholder="Search"></div>
       </aside>
@@ -126,6 +126,7 @@
         <section class="setting-item"><div class="setting-item-control"><input type="text" value="Liquid Notes"><button>Apply</button><button id="dark-cta" class="mod-cta">Install</button></div></section>
       </section>
       <aside id="dark-sidebar" class="workspace-split mod-left-split">
+        <div class="nav-folder-title is-active"><span class="nav-folder-title-content">Folder</span></div>
         <div class="nav-file-title is-active">File</div>
         <div class="search-input-container"><input type="search" placeholder="Search"></div>
       </aside>
@@ -141,6 +142,7 @@
       focusTarget.focus();
 
       const style = (selector) => getComputedStyle(document.querySelector(selector));
+      const pseudoStyle = (selector, pseudo) => getComputedStyle(document.querySelector(selector), pseudo);
       const custom = (selector, property) => style(selector).getPropertyValue(property).trim().toLowerCase();
 
       const expectCustom = (selector, property, expected) => {
@@ -207,6 +209,22 @@
         if (actual !== expected.toLowerCase()) failures.push(`${selector} ${property}: expected ${expected}, got ${actual}`);
       };
 
+      const expectPseudoStyle = (selector, pseudo, property, expected) => {
+        const actual = pseudoStyle(selector, pseudo)[property].toLowerCase();
+        if (actual !== expected.toLowerCase()) failures.push(`${selector}${pseudo} ${property}: expected ${expected}, got ${actual}`);
+      };
+
+      const expectPseudoStyleExcludes = (selector, pseudo, property, unexpected) => {
+        const actual = pseudoStyle(selector, pseudo)[property].toLowerCase();
+        if (actual.includes(unexpected.toLowerCase())) failures.push(`${selector}${pseudo} ${property}: expected not to include ${unexpected}, got ${actual}`);
+      };
+
+      const expectPseudoSameColor = (selector, pseudo) => {
+        const actual = pseudoStyle(selector, pseudo).color;
+        const expected = style(selector).color;
+        if (actual !== expected) failures.push(`${selector}${pseudo} color: expected ${expected}, got ${actual}`);
+      };
+
       const relativeLuminance = (cssColor) => {
         const channels = cssColor.match(/[\d.]+/g)?.slice(0, 3).map(Number);
         if (!channels || channels.length !== 3) return Number.NaN;
@@ -250,6 +268,10 @@
       expectStyleIncludes("#light-nav-back", "boxShadow", "inset");
       expectNotTransparent("#light-root .nav-file-title.is-active");
       expectMinPixels("#light-root .nav-file-title.is-active", "borderRadius", 7);
+      expectPseudoSameColor("#light-root .nav-folder-title-content", "::before");
+      expectPseudoSameColor("#dark-root .nav-folder-title-content", "::before");
+      expectPseudoStyle("#light-root .nav-folder-title-content", "::before", "borderTopStyle", "solid");
+      expectPseudoStyleExcludes("#light-root .nav-folder-title-content", "::before", "backgroundImage", "linear-gradient");
       expectMinPixels("#light-root .search-input-container input", "borderRadius", 7);
       expectMinPixels("#light-toolbar-button", "width", 28);
       expectMinPixels("#light-toolbar-button", "height", 28);
