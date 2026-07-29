@@ -6,8 +6,46 @@
     <title>Liquid Notes CSS fixture</title>
   </head>
   <body>
-    <main id="light-root" class="theme-light">Light</main>
-    <main id="dark-root" class="theme-dark">Dark</main>
-    <output id="test-results">{"ok":true,"failures":[]}</output>
+    <main id="light-root" class="theme-light">
+      <section id="light-canvas" class="workspace-leaf-content">Light canvas</section>
+      <aside id="light-sidebar" class="workspace-split mod-left-split">Light sidebar</aside>
+    </main>
+    <main id="dark-root" class="theme-dark">
+      <section id="dark-canvas" class="workspace-leaf-content">Dark canvas</section>
+      <aside id="dark-sidebar" class="workspace-split mod-left-split">Dark sidebar</aside>
+    </main>
+    <output id="test-results">pending</output>
+    <script>
+      const failures = [];
+
+      const style = (selector) => getComputedStyle(document.querySelector(selector));
+      const custom = (selector, property) => style(selector).getPropertyValue(property).trim().toLowerCase();
+
+      const expectCustom = (selector, property, expected) => {
+        const actual = custom(selector, property);
+        if (actual !== expected) failures.push(`${selector} ${property}: expected ${expected}, got ${actual || "<empty>"}`);
+      };
+
+      const expectCustomIncludes = (selector, property, expected) => {
+        const actual = custom(selector, property);
+        if (!actual.includes(expected.toLowerCase())) failures.push(`${selector} ${property}: expected to include ${expected}, got ${actual || "<empty>"}`);
+      };
+
+      const expectDifferent = (leftSelector, rightSelector, property) => {
+        const left = style(leftSelector)[property];
+        const right = style(rightSelector)[property];
+        if (left === right) failures.push(`${leftSelector} and ${rightSelector} share ${property}: ${left}`);
+      };
+
+      expectCustom("#light-root", "--interactive-accent", "#007aff");
+      expectCustom("#dark-root", "--interactive-accent", "#0a84ff");
+      expectCustomIncludes("#light-root", "--font-interface-theme", "-apple-system");
+      expectCustomIncludes("#light-root", "--font-text-theme", "pingfang sc");
+      expectCustomIncludes("#light-root", "--font-monospace-theme", "sf mono");
+      expectDifferent("#light-canvas", "#light-sidebar", "backgroundColor");
+      expectDifferent("#dark-canvas", "#dark-sidebar", "backgroundColor");
+
+      document.querySelector("#test-results").textContent = JSON.stringify({ failures });
+    </script>
   </body>
 </html>

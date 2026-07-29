@@ -1,7 +1,211 @@
-/* Liquid Notes 1.0.0 */
+/*
+ * Liquid Notes 1.0.0
+ * A calm, macOS-inspired Liquid Glass theme for Obsidian.
+ */
+
+body {
+  --font-interface-theme: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", system-ui, sans-serif;
+  --font-text-theme: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", system-ui, sans-serif;
+  --font-monospace-theme: "SF Mono", "JetBrains Mono", ui-monospace, "Cascadia Code", monospace;
+
+  --ln-radius-xs: 5px;
+  --ln-radius-sm: 7px;
+  --ln-radius-md: 11px;
+  --ln-radius-lg: 16px;
+  --ln-radius-pill: 999px;
+  --ln-blur: 24px;
+  --ln-blur-strong: 36px;
+  --ln-transition: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  --radius-s: var(--ln-radius-xs);
+  --radius-m: var(--ln-radius-sm);
+  --radius-l: var(--ln-radius-md);
+  --input-radius: var(--ln-radius-sm);
+  --button-radius: var(--ln-radius-pill);
+  --tab-radius-active: var(--ln-radius-sm);
+  --checkbox-radius: 5px;
+}
 
 .theme-light {
+  color-scheme: light;
+
+  --ln-accent: #007aff;
+  --ln-accent-hover: #006ee6;
+  --ln-canvas: #ffffff;
+  --ln-canvas-alt: #f7f7f9;
+  --ln-surface: rgba(255, 255, 255, 0.78);
+  --ln-surface-strong: rgba(255, 255, 255, 0.94);
+  --ln-sidebar: rgba(242, 242, 247, 0.78);
+  --ln-sidebar-strong: #f2f2f7;
+  --ln-control: rgba(255, 255, 255, 0.72);
+  --ln-control-hover: rgba(255, 255, 255, 0.94);
+  --ln-control-active: rgba(0, 122, 255, 0.14);
+  --ln-border: rgba(60, 60, 67, 0.18);
+  --ln-border-hover: rgba(60, 60, 67, 0.28);
+  --ln-separator: rgba(60, 60, 67, 0.14);
+  --ln-text: #1d1d1f;
+  --ln-text-secondary: rgba(60, 60, 67, 0.72);
+  --ln-text-tertiary: rgba(60, 60, 67, 0.46);
+  --ln-selection: rgba(0, 122, 255, 0.16);
+  --ln-shadow: 0 10px 34px rgba(40, 40, 50, 0.12), 0 1px 2px rgba(40, 40, 50, 0.08);
+  --ln-shadow-control: 0 1px 1px rgba(0, 0, 0, 0.05), inset 0 1px rgba(255, 255, 255, 0.82);
+  --ln-highlight: inset 0 1px rgba(255, 255, 255, 0.72);
+
+  --background-primary: var(--ln-canvas);
+  --background-primary-alt: var(--ln-canvas-alt);
+  --background-secondary: var(--ln-sidebar);
+  --background-secondary-alt: var(--ln-sidebar-strong);
+  --background-modifier-border: var(--ln-border);
+  --background-modifier-border-hover: var(--ln-border-hover);
+  --background-modifier-border-focus: rgba(0, 122, 255, 0.58);
+  --background-modifier-hover: rgba(60, 60, 67, 0.08);
+  --background-modifier-active-hover: rgba(0, 122, 255, 0.14);
+  --background-modifier-form-field: rgba(255, 255, 255, 0.72);
+  --background-modifier-form-field-highlighted: rgba(255, 255, 255, 0.96);
+  --background-modifier-box-shadow: rgba(40, 40, 50, 0.12);
+  --background-modifier-cover: rgba(245, 245, 247, 0.46);
+  --background-modifier-error: rgba(255, 59, 48, 0.14);
+  --background-modifier-success: rgba(52, 199, 89, 0.14);
+  --background-modifier-message: rgba(242, 242, 247, 0.92);
+
+  --text-normal: var(--ln-text);
+  --text-muted: var(--ln-text-secondary);
+  --text-faint: var(--ln-text-tertiary);
+  --text-on-accent: #ffffff;
+  --text-on-accent-inverted: #ffffff;
+  --text-accent: var(--ln-accent);
+  --text-accent-hover: var(--ln-accent-hover);
+  --text-selection: var(--ln-selection);
+  --text-highlight-bg: rgba(255, 204, 0, 0.28);
+
+  --interactive-normal: var(--ln-control);
+  --interactive-hover: var(--ln-control-hover);
+  --interactive-accent: var(--ln-accent);
+  --interactive-accent-hover: var(--ln-accent-hover);
+  --interactive-success: #28a745;
+
+  --icon-color: rgba(60, 60, 67, 0.76);
+  --icon-color-hover: var(--ln-text);
+  --icon-color-active: var(--ln-accent);
+  --icon-color-focused: var(--ln-accent);
+  --divider-color: var(--ln-separator);
+  --divider-color-hover: var(--ln-border-hover);
+  --tab-outline-color: var(--ln-separator);
+  --titlebar-background: rgba(246, 246, 248, 0.74);
+  --titlebar-background-focused: rgba(246, 246, 248, 0.86);
+  --workspace-background-translucent: rgba(246, 246, 248, 0.68);
 }
 
 .theme-dark {
+  color-scheme: dark;
+
+  --ln-accent: #0a84ff;
+  --ln-accent-hover: #409cff;
+  --ln-canvas: #1c1c1e;
+  --ln-canvas-alt: #232326;
+  --ln-surface: rgba(44, 44, 46, 0.78);
+  --ln-surface-strong: rgba(44, 44, 46, 0.94);
+  --ln-sidebar: rgba(28, 28, 30, 0.76);
+  --ln-sidebar-strong: #242426;
+  --ln-control: rgba(118, 118, 128, 0.18);
+  --ln-control-hover: rgba(118, 118, 128, 0.28);
+  --ln-control-active: rgba(10, 132, 255, 0.24);
+  --ln-border: rgba(235, 235, 245, 0.18);
+  --ln-border-hover: rgba(235, 235, 245, 0.3);
+  --ln-separator: rgba(84, 84, 88, 0.6);
+  --ln-text: #f5f5f7;
+  --ln-text-secondary: rgba(235, 235, 245, 0.68);
+  --ln-text-tertiary: rgba(235, 235, 245, 0.4);
+  --ln-selection: rgba(10, 132, 255, 0.24);
+  --ln-shadow: 0 14px 42px rgba(0, 0, 0, 0.34), 0 1px 3px rgba(0, 0, 0, 0.28);
+  --ln-shadow-control: 0 1px 2px rgba(0, 0, 0, 0.2), inset 0 1px rgba(255, 255, 255, 0.08);
+  --ln-highlight: inset 0 1px rgba(255, 255, 255, 0.08);
+
+  --background-primary: var(--ln-canvas);
+  --background-primary-alt: var(--ln-canvas-alt);
+  --background-secondary: var(--ln-sidebar);
+  --background-secondary-alt: var(--ln-sidebar-strong);
+  --background-modifier-border: var(--ln-border);
+  --background-modifier-border-hover: var(--ln-border-hover);
+  --background-modifier-border-focus: rgba(10, 132, 255, 0.72);
+  --background-modifier-hover: rgba(235, 235, 245, 0.08);
+  --background-modifier-active-hover: rgba(10, 132, 255, 0.24);
+  --background-modifier-form-field: rgba(118, 118, 128, 0.18);
+  --background-modifier-form-field-highlighted: rgba(118, 118, 128, 0.28);
+  --background-modifier-box-shadow: rgba(0, 0, 0, 0.36);
+  --background-modifier-cover: rgba(0, 0, 0, 0.42);
+  --background-modifier-error: rgba(255, 69, 58, 0.2);
+  --background-modifier-success: rgba(48, 209, 88, 0.18);
+  --background-modifier-message: rgba(44, 44, 46, 0.94);
+
+  --text-normal: var(--ln-text);
+  --text-muted: var(--ln-text-secondary);
+  --text-faint: var(--ln-text-tertiary);
+  --text-on-accent: #ffffff;
+  --text-on-accent-inverted: #ffffff;
+  --text-accent: var(--ln-accent);
+  --text-accent-hover: var(--ln-accent-hover);
+  --text-selection: var(--ln-selection);
+  --text-highlight-bg: rgba(255, 214, 10, 0.24);
+
+  --interactive-normal: var(--ln-control);
+  --interactive-hover: var(--ln-control-hover);
+  --interactive-accent: var(--ln-accent);
+  --interactive-accent-hover: var(--ln-accent-hover);
+  --interactive-success: #30d158;
+
+  --icon-color: rgba(235, 235, 245, 0.72);
+  --icon-color-hover: var(--ln-text);
+  --icon-color-active: var(--ln-accent);
+  --icon-color-focused: var(--ln-accent);
+  --divider-color: var(--ln-separator);
+  --divider-color-hover: var(--ln-border-hover);
+  --tab-outline-color: var(--ln-separator);
+  --titlebar-background: rgba(30, 30, 32, 0.72);
+  --titlebar-background-focused: rgba(30, 30, 32, 0.86);
+  --workspace-background-translucent: rgba(24, 24, 26, 0.7);
+}
+
+.theme-light,
+.theme-dark {
+  font-family: var(--font-interface-theme);
+  accent-color: var(--interactive-accent);
+}
+
+.workspace-leaf-content {
+  background-color: var(--background-primary);
+}
+
+.workspace-split.mod-left-split,
+.workspace-split.mod-right-split {
+  background-color: var(--background-secondary);
+  -webkit-backdrop-filter: saturate(1.35) blur(var(--ln-blur));
+  backdrop-filter: saturate(1.35) blur(var(--ln-blur));
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .workspace-split.mod-left-split,
+  .workspace-split.mod-right-split {
+    background-color: var(--background-secondary-alt);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .workspace-split.mod-left-split,
+  .workspace-split.mod-right-split {
+    background-color: var(--background-secondary-alt);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+  }
 }

@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
@@ -18,5 +19,44 @@ assert.deepEqual(manifest, {
 const css = await read("theme.css");
 assert.doesNotMatch(css, /@import|https?:\/\//i, "theme.css must not load remote resources");
 assert.doesNotMatch(css, /\/Users\/|[A-Z]:\\/i, "theme.css must not contain private paths");
+
+const chromeCandidates = [
+  process.env.CHROME_BIN,
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "google-chrome",
+  "google-chrome-stable",
+  "chromium",
+].filter(Boolean);
+
+let browserResult;
+let chromeBinary;
+for (const candidate of chromeCandidates) {
+  const result = spawnSync(candidate, [
+    "--headless=new",
+    "--no-sandbox",
+    "--disable-gpu",
+    "--disable-background-networking",
+    "--disable-extensions",
+    "--no-first-run",
+    "--no-default-browser-check",
+    "--dump-dom",
+    `file://${path.join(root, "tests/render-fixture.html")}`,
+  ], { encoding: "utf8", maxBuffer: 10 * 1024 * 1024, timeout: 10_000 });
+
+  if (!result.error || result.error.code !== "ENOENT") {
+    browserResult = result;
+    chromeBinary = candidate;
+    break;
+  }
+}
+
+assert.ok(chromeBinary, "A Chrome or Chromium binary is required for computed-style tests");
+assert.notEqual(browserResult.error?.code, "ETIMEDOUT", "Chrome computed-style fixture timed out");
+assert.equal(browserResult.status, 0, browserResult.stderr || "Chrome fixture failed");
+
+const resultMatch = browserResult.stdout.match(/<output id="test-results">([^<]+)<\/output>/);
+assert.ok(resultMatch, "Browser fixture did not emit test results");
+const computedStyleResult = JSON.parse(resultMatch[1].replaceAll("&quot;", "\"").replaceAll("&amp;", "&"));
+assert.deepEqual(computedStyleResult.failures, [], computedStyleResult.failures.join("\n"));
 
 console.log("Theme validation passed");
