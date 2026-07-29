@@ -1,0 +1,31 @@
+name: Validate theme
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Confirm browser runtime
+        run: google-chrome --version
+
+      - name: Validate manifest, rendered styles, installer, and release assets
+        env:
+          CHROME_BIN: google-chrome
+        run: node tests/validate-theme.mjs

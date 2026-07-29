@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { access, mkdir, mkdtemp, readFile, rm } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
+import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
@@ -78,6 +79,47 @@ for (const language of ["swift", "javascript", "python", "json", "bash", "css"])
 }
 for (const markdownPattern of [/^# /m, /^> /m, /^- \[[ x]\] /m, /^\|.+\|$/m, /^> \[!\w+\]/m]) {
   assert.match(showcase, markdownPattern, `Showcase is missing Markdown fixture ${markdownPattern}`);
+}
+
+for (const requiredFile of [
+  "README.md",
+  "CHANGELOG.md",
+  "scripts/install-local.sh",
+  ".github/workflows/validate.yml",
+]) {
+  await access(path.join(root, requiredFile));
+}
+
+const installerFixture = await mkdtemp(path.join(tmpdir(), "liquid-notes-installer-"));
+try {
+  const invalidVault = path.join(installerFixture, "not-a-vault");
+  await mkdir(invalidVault);
+  const rejectedInstall = spawnSync("bash", [path.join(root, "scripts/install-local.sh"), invalidVault], {
+    cwd: root,
+    encoding: "utf8",
+  });
+  assert.notEqual(rejectedInstall.status, 0, "Installer must reject directories without .obsidian");
+  assert.match(rejectedInstall.stderr, /Not an Obsidian vault/, "Installer rejection must explain the invalid vault");
+
+  const validVault = path.join(installerFixture, "vault");
+  await mkdir(path.join(validVault, ".obsidian"), { recursive: true });
+  const acceptedInstall = spawnSync("bash", [path.join(root, "scripts/install-local.sh"), validVault], {
+    cwd: root,
+    encoding: "utf8",
+  });
+  assert.equal(acceptedInstall.status, 0, acceptedInstall.stderr || "Installer must accept a valid vault");
+  assert.equal(
+    await readFile(path.join(validVault, ".obsidian/themes/Liquid Notes/manifest.json"), "utf8"),
+    await read("manifest.json"),
+    "Installed manifest must match the repository",
+  );
+  assert.equal(
+    await readFile(path.join(validVault, ".obsidian/themes/Liquid Notes/theme.css"), "utf8"),
+    await read("theme.css"),
+    "Installed CSS must match the repository",
+  );
+} finally {
+  await rm(installerFixture, { recursive: true, force: true });
 }
 
 console.log("Theme validation passed");
