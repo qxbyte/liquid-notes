@@ -7,12 +7,40 @@
   </head>
   <body>
     <main id="light-root" class="theme-light">
+      <header class="titlebar">
+        <button id="light-toolbar-button" class="clickable-icon" autofocus aria-label="Sidebar">◫</button>
+      </header>
+      <nav class="workspace-ribbon">Ribbon</nav>
+      <div class="workspace-tab-header-container">
+        <div class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
+        <div class="workspace-tab-header"><span class="workspace-tab-header-inner-title">Inactive</span></div>
+      </div>
       <section id="light-canvas" class="workspace-leaf-content">Light canvas</section>
-      <aside id="light-sidebar" class="workspace-split mod-left-split">Light sidebar</aside>
+      <aside id="light-sidebar" class="workspace-split mod-left-split">
+        <div class="nav-folder-title is-active">Folder</div>
+        <div class="nav-file-title is-active">File</div>
+        <div class="search-input-container"><input type="search" placeholder="Search"></div>
+      </aside>
+      <footer class="status-bar">Status</footer>
+      <div class="menu"><div class="menu-item is-selected">Menu item</div></div>
+      <div class="modal"><div class="modal-title">Modal</div></div>
+      <div class="tooltip">Tooltip</div>
     </main>
     <main id="dark-root" class="theme-dark">
+      <header class="titlebar"><button class="clickable-icon" aria-label="Sidebar">◫</button></header>
+      <nav class="workspace-ribbon">Ribbon</nav>
+      <div class="workspace-tab-header-container">
+        <div class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
+      </div>
       <section id="dark-canvas" class="workspace-leaf-content">Dark canvas</section>
-      <aside id="dark-sidebar" class="workspace-split mod-left-split">Dark sidebar</aside>
+      <aside id="dark-sidebar" class="workspace-split mod-left-split">
+        <div class="nav-file-title is-active">File</div>
+        <div class="search-input-container"><input type="search" placeholder="Search"></div>
+      </aside>
+      <footer class="status-bar">Status</footer>
+      <div class="menu"><div class="menu-item is-selected">Menu item</div></div>
+      <div class="modal"><div class="modal-title">Modal</div></div>
+      <div class="tooltip">Tooltip</div>
     </main>
     <output id="test-results">pending</output>
     <script>
@@ -37,6 +65,18 @@
         if (left === right) failures.push(`${leftSelector} and ${rightSelector} share ${property}: ${left}`);
       };
 
+      const expectNotTransparent = (selector, property = "backgroundColor") => {
+        const actual = style(selector)[property];
+        if (actual === "rgba(0, 0, 0, 0)" || actual === "transparent" || actual === "none") {
+          failures.push(`${selector} ${property}: expected a visible value, got ${actual}`);
+        }
+      };
+
+      const expectMinPixels = (selector, property, minimum) => {
+        const actual = Number.parseFloat(style(selector)[property]);
+        if (!Number.isFinite(actual) || actual < minimum) failures.push(`${selector} ${property}: expected at least ${minimum}px, got ${style(selector)[property]}`);
+      };
+
       expectCustom("#light-root", "--interactive-accent", "#007aff");
       expectCustom("#dark-root", "--interactive-accent", "#0a84ff");
       expectCustomIncludes("#light-root", "--font-interface-theme", "-apple-system");
@@ -44,6 +84,20 @@
       expectCustomIncludes("#light-root", "--font-monospace-theme", "sf mono");
       expectDifferent("#light-canvas", "#light-sidebar", "backgroundColor");
       expectDifferent("#dark-canvas", "#dark-sidebar", "backgroundColor");
+      expectNotTransparent("#light-root .titlebar");
+      expectNotTransparent("#dark-root .titlebar");
+      expectNotTransparent("#light-root .workspace-tab-header.is-active");
+      expectNotTransparent("#dark-root .workspace-tab-header.is-active");
+      expectMinPixels("#light-root .workspace-tab-header.is-active", "borderRadius", 7);
+      expectNotTransparent("#light-root .nav-file-title.is-active");
+      expectMinPixels("#light-root .nav-file-title.is-active", "borderRadius", 7);
+      expectMinPixels("#light-root .search-input-container input", "borderRadius", 7);
+      expectMinPixels("#light-toolbar-button", "width", 28);
+      expectMinPixels("#light-toolbar-button", "height", 28);
+      expectNotTransparent("#light-root .status-bar");
+      expectNotTransparent("#light-root .menu");
+      expectNotTransparent("#light-root .modal");
+      expectNotTransparent("#light-root .tooltip");
 
       document.querySelector("#test-results").textContent = JSON.stringify({ failures });
     </script>

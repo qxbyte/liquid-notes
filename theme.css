@@ -183,16 +183,360 @@ body {
   backdrop-filter: saturate(1.35) blur(var(--ln-blur));
 }
 
+/* macOS window chrome ------------------------------------------------------ */
+
+.titlebar,
+.workspace-tab-header-container,
+.status-bar,
+.menu,
+.modal,
+.tooltip {
+  -webkit-backdrop-filter: saturate(1.35) blur(var(--ln-blur));
+  backdrop-filter: saturate(1.35) blur(var(--ln-blur));
+}
+
+.titlebar {
+  background-color: var(--titlebar-background);
+  border-bottom: 1px solid var(--ln-separator);
+  box-shadow: var(--ln-highlight);
+}
+
+body.is-focused .titlebar {
+  background-color: var(--titlebar-background-focused);
+}
+
+.workspace-ribbon {
+  --ribbon-background: transparent;
+  background-color: transparent;
+  border-color: var(--ln-separator);
+  color: var(--icon-color);
+  padding-inline: 4px;
+}
+
+.workspace-ribbon .side-dock-actions,
+.workspace-ribbon .side-dock-settings {
+  gap: 3px;
+}
+
+.clickable-icon {
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
+  padding: 6px;
+  border: 1px solid transparent;
+  border-radius: var(--ln-radius-pill);
+  color: var(--icon-color);
+  background-color: transparent;
+  box-shadow: none;
+  transition:
+    color var(--ln-transition),
+    background-color var(--ln-transition),
+    border-color var(--ln-transition),
+    box-shadow var(--ln-transition),
+    transform var(--ln-transition);
+}
+
+.clickable-icon:hover {
+  color: var(--icon-color-hover);
+  background-color: var(--background-modifier-hover);
+}
+
+.clickable-icon:active,
+.clickable-icon.is-active {
+  color: var(--icon-color-active);
+  background-color: var(--ln-control-active);
+  transform: scale(0.96);
+}
+
+.clickable-icon:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--ln-accent) 72%, transparent);
+  outline-offset: 2px;
+}
+
+.svg-icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Tabs -------------------------------------------------------------------- */
+
+.workspace-tab-header-container {
+  min-height: 38px;
+  padding: 4px 6px;
+  background-color: color-mix(in srgb, var(--ln-sidebar) 88%, transparent);
+  border-bottom: 1px solid var(--ln-separator);
+  box-shadow: var(--ln-highlight);
+}
+
+.workspace-tab-header-container-inner {
+  gap: 3px;
+  margin: 0;
+}
+
+.workspace-tab-header {
+  min-height: 30px;
+  margin: 0;
+  padding: 0 7px;
+  border: 1px solid transparent;
+  border-radius: var(--ln-radius-sm);
+  color: var(--text-muted);
+  background-color: transparent;
+  transition:
+    color var(--ln-transition),
+    background-color var(--ln-transition),
+    border-color var(--ln-transition),
+    box-shadow var(--ln-transition);
+}
+
+.workspace-tab-header:hover {
+  color: var(--text-normal);
+  background-color: var(--background-modifier-hover);
+}
+
+.workspace-tab-header.is-active {
+  color: var(--text-normal);
+  background-color: var(--ln-surface-strong);
+  border-color: var(--ln-border);
+  box-shadow: var(--ln-shadow-control);
+}
+
+.workspace-tab-header-inner {
+  gap: 6px;
+  padding: 0 3px;
+}
+
+.workspace-tab-header-inner-title {
+  font-size: 12px;
+  font-weight: 560;
+}
+
+.workspace-tab-header-status-icon,
+.workspace-tab-header-inner-icon {
+  color: currentColor;
+}
+
+/* Finder-like source lists ------------------------------------------------ */
+
+.nav-header {
+  padding: 7px 9px 4px;
+}
+
+.nav-buttons-container {
+  gap: 3px;
+  justify-content: flex-start;
+}
+
+.nav-files-container,
+.tag-container,
+.search-results-container {
+  padding: 4px 7px 10px;
+}
+
+.tree-item-self,
+.nav-file-title,
+.nav-folder-title {
+  min-height: 30px;
+  margin-block: 1px;
+  padding-block: 4px;
+  padding-inline-end: 7px;
+  border: 1px solid transparent;
+  border-radius: var(--ln-radius-sm);
+  color: var(--text-muted);
+  transition:
+    color var(--ln-transition),
+    background-color var(--ln-transition),
+    border-color var(--ln-transition);
+}
+
+.tree-item-self:hover,
+.nav-file-title:hover,
+.nav-folder-title:hover {
+  color: var(--text-normal);
+  background-color: var(--background-modifier-hover);
+}
+
+.tree-item-self.is-active,
+.nav-file-title.is-active,
+.nav-folder-title.is-active,
+.nav-file-title.is-selected,
+.nav-folder-title.is-selected {
+  color: var(--text-normal);
+  background-color: var(--ln-control-active);
+  border-color: color-mix(in srgb, var(--ln-accent) 12%, transparent);
+}
+
+.nav-file-title-content,
+.nav-folder-title-content {
+  overflow: hidden;
+  font-size: 12.5px;
+  font-weight: 450;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-folder-title-content {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 570;
+}
+
+.nav-folder-title-content::before {
+  width: 15px;
+  height: 11px;
+  flex: 0 0 auto;
+  content: "";
+  border-radius: 2px 2px 3px 3px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5), transparent 48%),
+    linear-gradient(180deg, #64d2ff, #0a84ff);
+  box-shadow: inset 0 0 0 0.5px rgba(0, 64, 128, 0.22), 0 1px 1px rgba(0, 64, 128, 0.12);
+  clip-path: polygon(0 18%, 34% 18%, 42% 0, 72% 0, 80% 18%, 100% 18%, 100% 100%, 0 100%);
+}
+
+.nav-file-title-content {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.nav-file-title-content::before {
+  width: 11px;
+  height: 14px;
+  flex: 0 0 auto;
+  content: "";
+  border: 1.2px solid currentColor;
+  border-radius: 2px;
+  opacity: 0.66;
+  background: linear-gradient(135deg, transparent 0 67%, currentColor 68% 71%, transparent 72%);
+}
+
+.nav-folder-collapse-indicator {
+  opacity: 0.56;
+}
+
+/* Search and compact controls -------------------------------------------- */
+
+.search-input-container {
+  margin: 3px 1px 7px;
+}
+
+.search-input-container input,
+input[type="search"] {
+  min-height: 30px;
+  padding-inline: 30px 10px;
+  border: 1px solid var(--ln-border);
+  border-radius: var(--ln-radius-pill);
+  color: var(--text-normal);
+  background-color: var(--ln-control);
+  box-shadow: var(--ln-shadow-control);
+  transition:
+    background-color var(--ln-transition),
+    border-color var(--ln-transition),
+    box-shadow var(--ln-transition);
+}
+
+.search-input-container input:hover,
+input[type="search"]:hover {
+  background-color: var(--ln-control-hover);
+}
+
+.search-input-container input:focus,
+input[type="search"]:focus {
+  border-color: color-mix(in srgb, var(--ln-accent) 62%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ln-accent) 16%, transparent), var(--ln-shadow-control);
+}
+
+/* Floating glass ---------------------------------------------------------- */
+
+.status-bar {
+  min-height: 26px;
+  padding: 3px 9px;
+  border: 1px solid var(--ln-border);
+  border-radius: var(--ln-radius-pill) 0 0 0;
+  color: var(--text-muted);
+  background-color: var(--ln-surface);
+  box-shadow: var(--ln-shadow-control);
+}
+
+.menu {
+  padding: 5px;
+  border: 1px solid var(--ln-border);
+  border-radius: var(--ln-radius-md);
+  background-color: var(--ln-surface-strong);
+  box-shadow: var(--ln-shadow);
+}
+
+.menu-item {
+  min-height: 28px;
+  border-radius: var(--ln-radius-sm);
+}
+
+.menu-item:hover,
+.menu-item.is-selected {
+  color: var(--text-normal);
+  background-color: var(--ln-control-active);
+}
+
+.modal-container {
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.modal {
+  border: 1px solid var(--ln-border);
+  border-radius: var(--ln-radius-lg);
+  background-color: var(--ln-surface-strong);
+  box-shadow: var(--ln-shadow);
+}
+
+.modal-title {
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.tooltip {
+  padding: 5px 9px;
+  border: 1px solid var(--ln-border);
+  border-radius: var(--ln-radius-sm);
+  color: var(--text-normal);
+  background-color: var(--ln-surface-strong);
+  box-shadow: var(--ln-shadow-control);
+  font-size: 11.5px;
+}
+
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .workspace-split.mod-left-split,
-  .workspace-split.mod-right-split {
+  .workspace-split.mod-right-split,
+  .titlebar,
+  .workspace-tab-header-container,
+  .status-bar,
+  .menu,
+  .modal,
+  .tooltip {
     background-color: var(--background-secondary-alt);
   }
 }
 
 @media (prefers-reduced-transparency: reduce) {
   .workspace-split.mod-left-split,
-  .workspace-split.mod-right-split {
+  .workspace-split.mod-right-split,
+  .titlebar,
+  .workspace-tab-header-container,
+  .status-bar,
+  .menu,
+  .modal,
+  .tooltip {
     background-color: var(--background-secondary-alt);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;

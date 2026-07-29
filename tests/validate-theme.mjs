@@ -59,4 +59,8 @@ assert.ok(resultMatch, "Browser fixture did not emit test results");
 const computedStyleResult = JSON.parse(resultMatch[1].replaceAll("&quot;", "\"").replaceAll("&amp;", "&"));
 assert.deepEqual(computedStyleResult.failures, [], computedStyleResult.failures.join("\n"));
 
+const thirdPartyNotices = await read("THIRD_PARTY_NOTICES.md");
+assert.match(thirdPartyNotices, /Lucide/i, "Icon notice must identify Lucide");
+assert.match(thirdPartyNotices, /ISC License/i, "Icon notice must include Lucide's ISC license");
+
 console.log("Theme validation passed");
