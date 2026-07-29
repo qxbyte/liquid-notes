@@ -1306,12 +1306,11 @@ kbd,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    transition-duration: 0s !important;
-    animation-duration: 0s !important;
-    animation-iteration-count: 1 !important;
+  body {
+    --ln-transition: 0ms linear;
+  }
+
+  html {
+    scroll-behavior: auto;
   }
 }

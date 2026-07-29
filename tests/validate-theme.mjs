@@ -20,6 +20,8 @@ assert.deepEqual(manifest, {
 const css = await read("theme.css");
 assert.doesNotMatch(css, /@import|https?:\/\//i, "theme.css must not load remote resources");
 assert.doesNotMatch(css, /\/Users\/|[A-Z]:\\/i, "theme.css must not contain private paths");
+assert.doesNotMatch(css, /!important/i, "theme.css must remain user-overridable without !important");
+assert.doesNotMatch(css, /:has\(/i, "theme.css must avoid expensive :has() selectors");
 
 const chromeCandidates = [
   process.env.CHROME_BIN,
@@ -103,6 +105,10 @@ for (const imageFile of [
     `${imageFile} must be an actual PNG file`,
   );
 }
+
+const storeScreenshot = await readFile(path.join(root, "screenshot.png"));
+assert.equal(storeScreenshot.readUInt32BE(16), 512, "screenshot.png must be 512 pixels wide");
+assert.equal(storeScreenshot.readUInt32BE(20), 288, "screenshot.png must be 288 pixels high");
 
 const installerFixture = await mkdtemp(path.join(tmpdir(), "liquid-notes-installer-"));
 try {
