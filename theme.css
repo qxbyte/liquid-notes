@@ -249,7 +249,6 @@ body.is-focused .titlebar {
 }
 
 .workspace-ribbon .clickable-icon.side-dock-ribbon-action {
-  background-color: transparent;
   box-shadow: none;
   transition:
     color var(--ln-transition-fast),
@@ -340,6 +339,10 @@ textarea:focus-visible,
 
 :is(.view-header-nav-buttons, .view-actions) > .clickable-icon:hover {
   background-color: var(--background-modifier-hover);
+}
+
+:is(.view-header-nav-buttons, .view-actions) > .clickable-icon:focus-visible {
+  outline-offset: -3px;
 }
 
 :is(.view-header-nav-buttons, .view-actions) > .clickable-icon.is-active {
@@ -1365,6 +1368,13 @@ kbd,
   .setting-item-control button,
   .vertical-tab-nav-item,
   .menu-item {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  :is(.view-header-nav-buttons, .view-actions) > .clickable-icon {
+    width: 44px;
+    height: 44px;
     min-width: 44px;
     min-height: 44px;
   }

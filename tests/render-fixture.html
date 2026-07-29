@@ -40,7 +40,7 @@
         </div>
         <div id="light-view-actions" class="view-actions">
           <button id="light-view-active" class="clickable-icon is-active">⌘</button>
-          <button class="clickable-icon">•••</button>
+          <button id="light-view-menu" class="clickable-icon">•••</button>
         </div>
       </div>
       <section id="light-canvas" class="workspace-leaf-content">
@@ -296,6 +296,11 @@
       expectStyle("#light-ribbon-button", "backgroundColor", "rgba(0, 0, 0, 0)");
       if (!focusTarget.matches(":focus-visible")) failures.push("#light-toolbar-button: expected :focus-visible after keyboard-style autofocus");
       expectMinPixels("#light-toolbar-button", "outlineWidth", 2);
+      const groupedFocusTarget = document.querySelector("#light-view-menu");
+      groupedFocusTarget.focus();
+      if (!groupedFocusTarget.matches(":focus-visible")) failures.push("#light-view-menu: expected :focus-visible after keyboard focus");
+      expectMinPixels("#light-view-menu", "outlineWidth", 2);
+      expectMaxPixels("#light-view-menu", "outlineOffset", -2);
       expectNotTransparent("#light-root .status-bar");
       expectNotTransparent("#light-root .menu");
       expectNotTransparent("#light-root .modal");
@@ -349,6 +354,10 @@
 
       if (window.innerWidth <= 800) {
         expectMinPixels("#light-toolbar-button", "height", 44);
+        expectMinPixels("#light-nav-back", "width", 44);
+        expectMinPixels("#light-nav-back", "height", 44);
+        expectMinPixels("#light-view-menu", "width", 44);
+        expectMinPixels("#light-view-menu", "height", 44);
         expectMinPixels("#mobile-action", "height", 44);
         expectStyleIncludes("#light-sidebar", "backdropFilter", "blur(14px)");
       }

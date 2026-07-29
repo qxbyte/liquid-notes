@@ -18,6 +18,11 @@ assert.deepEqual(manifest, {
 });
 
 const css = await read("theme.css");
+assert.doesNotMatch(
+  css,
+  /\.workspace-ribbon\s+\.clickable-icon\.side-dock-ribbon-action\s*\{[^}]*background-color:\s*transparent/i,
+  "Ribbon base rule must not override the generic hover background with a higher-specificity transparent background",
+);
 assert.doesNotMatch(css, /@import|https?:\/\//i, "theme.css must not load remote resources");
 assert.doesNotMatch(css, /\/Users\/|[A-Z]:\\/i, "theme.css must not contain private paths");
 assert.doesNotMatch(css, /!important/i, "theme.css must remain user-overridable without !important");
