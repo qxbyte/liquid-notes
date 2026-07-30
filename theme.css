@@ -467,8 +467,8 @@ textarea:focus-visible,
   box-shadow: var(--ln-shadow-floating-control);
 }
 
-.workspace .mod-root .workspace-tab-header.is-active::before,
-.workspace .mod-root .workspace-tab-header.is-active::after {
+.workspace .mod-root .workspace-tab-header-container .workspace-tab-header.is-active::before,
+.workspace .mod-root .workspace-tab-header-container .workspace-tab-header.is-active::after {
   content: none;
   box-shadow: none;
   clip-path: none;
