@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { access, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
@@ -148,9 +148,93 @@ const runBrowserFixture = (label, extraArguments = []) => {
   if (label === "reduced motion") assert.equal(computedStyleResult.media.reducedMotion, true, "Chrome must emulate reduced motion");
 };
 
+const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+const requestJson = (url) => new Promise((resolve, reject) => {
+  fetch(url).then((response) => response.json()).then(resolve, reject);
+});
+
+const runReducedTransparencyFixture = async () => {
+  const profileDirectory = await mkdtemp(path.join(tmpdir(), "liquid-notes-chrome-"));
+  const port = 9223;
+  const browser = spawn(chromeBinary, [
+    "--headless=new",
+    "--no-sandbox",
+    "--disable-gpu",
+    "--disable-background-networking",
+    "--disable-extensions",
+    "--no-first-run",
+    "--no-default-browser-check",
+    "--window-size=1280,900",
+    `--user-data-dir=${profileDirectory}`,
+    `--remote-debugging-port=${port}`,
+    "about:blank",
+  ]);
+
+  try {
+    let browserVersion;
+    for (let attempt = 0; attempt < 50; attempt += 1) {
+      try {
+        browserVersion = await requestJson(`http://127.0.0.1:${port}/json/version`);
+        break;
+      } catch {
+        await wait(100);
+      }
+    }
+    assert.ok(browserVersion, "Reduced-transparency: Chrome DevTools endpoint did not start");
+
+    const socket = new WebSocket(browserVersion.webSocketDebuggerUrl);
+    await new Promise((resolve, reject) => {
+      socket.addEventListener("open", resolve, { once: true });
+      socket.addEventListener("error", reject, { once: true });
+    });
+    let nextId = 1;
+    const command = (method, params = {}, sessionId) => new Promise((resolve, reject) => {
+      const id = nextId++;
+      const onMessage = ({ data }) => {
+        const message = JSON.parse(data);
+        if (message.id !== id) return;
+        socket.removeEventListener("message", onMessage);
+        if (message.error) reject(new Error(`${method}: ${message.error.message}`));
+        else resolve(message.result);
+      };
+      socket.addEventListener("message", onMessage);
+      socket.send(JSON.stringify({ id, method, params, ...(sessionId ? { sessionId } : {}) }));
+    });
+
+    const { targetId } = await command("Target.createTarget", { url: "about:blank" });
+    const { sessionId } = await command("Target.attachToTarget", { targetId, flatten: true });
+    await command("Emulation.setEmulatedMedia", {
+      features: [{ name: "prefers-reduced-transparency", value: "reduce" }],
+    }, sessionId);
+    await command("Page.enable", {}, sessionId);
+    await command("Page.navigate", { url: `file://${path.join(root, "tests/render-fixture.html")}` }, sessionId);
+
+    let result;
+    for (let attempt = 0; attempt < 50; attempt += 1) {
+      const evaluation = await command("Runtime.evaluate", {
+        expression: "document.querySelector('#test-results')?.textContent",
+        returnByValue: true,
+      }, sessionId);
+      if (evaluation.result.value && evaluation.result.value !== "pending") {
+        result = JSON.parse(evaluation.result.value);
+        break;
+      }
+      await wait(100);
+    }
+    assert.ok(result, "Reduced-transparency: Browser fixture did not emit test results");
+    assert.deepEqual(result.failures, [], `reduced transparency\n${result.failures.join("\n")}`);
+    assert.equal(result.media.reducedTransparency, true, "Chrome must emulate reduced transparency");
+    socket.close();
+  } finally {
+    browser.kill();
+    await rm(profileDirectory, { recursive: true, force: true });
+  }
+};
+
 runBrowserFixture("desktop", ["--window-size=1280,900"]);
 runBrowserFixture("mobile", ["--window-size=760,900"]);
 runBrowserFixture("reduced motion", ["--force-prefers-reduced-motion"]);
+await runReducedTransparencyFixture();
 
 const thirdPartyNotices = await read("THIRD_PARTY_NOTICES.md");
 assert.match(thirdPartyNotices, /Lucide/i, "Icon notice must identify Lucide");

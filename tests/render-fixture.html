@@ -509,7 +509,9 @@
       expectNotTransparent("#light-root .graph-controls");
       expectNotTransparent("#light-root .pdf-toolbar");
       expectStyle("#light-root .canvas-node-container", "backdropFilter", "none");
-      expectStyleIncludes("#light-root .canvas-controls", "backdropFilter", "blur(");
+      if (!matchMedia("(prefers-reduced-transparency: reduce)").matches) {
+        expectStyleIncludes("#light-root .canvas-controls", "backdropFilter", "blur(");
+      }
       expectNotTransparent("#light-root .vertical-tab-header");
       expectNotTransparent("#light-root .setting-item-control input");
       expectNotTransparent("#light-root .setting-item-control button");
