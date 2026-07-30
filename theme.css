@@ -249,10 +249,41 @@ body.is-focused .titlebar {
 }
 
 .workspace-ribbon .clickable-icon.side-dock-ribbon-action {
+  overflow: hidden;
+  border-color: transparent;
+  border-radius: var(--ln-radius-pill);
+  background: transparent;
   box-shadow: none;
-  transition:
-    color var(--ln-transition-fast),
-    transform var(--ln-transition-fast);
+  filter: none;
+  transform: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  transition: color var(--ln-transition-fast);
+}
+
+.workspace-ribbon .clickable-icon.side-dock-ribbon-action:hover {
+  color: var(--icon-color-hover);
+  background-color: transparent;
+}
+
+.workspace-ribbon .clickable-icon.side-dock-ribbon-action:is(:active, .is-active) {
+  color: var(--icon-color-active);
+  background-color: transparent;
+  transform: none;
+}
+
+.workspace-ribbon .clickable-icon.side-dock-ribbon-action::before,
+.workspace-ribbon .clickable-icon.side-dock-ribbon-action::after {
+  content: none;
+  background: transparent;
+  box-shadow: none;
+  filter: none;
+}
+
+.workspace-ribbon .clickable-icon.side-dock-ribbon-action > .svg-icon {
+  background: transparent;
+  box-shadow: none;
+  filter: none;
 }
 
 .clickable-icon {

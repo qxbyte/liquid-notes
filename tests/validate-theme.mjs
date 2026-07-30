@@ -18,10 +18,15 @@ assert.deepEqual(manifest, {
 });
 
 const css = await read("theme.css");
-assert.doesNotMatch(
+assert.match(
   css,
-  /\.workspace-ribbon\s+\.clickable-icon\.side-dock-ribbon-action\s*\{[^}]*background-color:\s*transparent/i,
-  "Ribbon base rule must not override the generic hover background with a higher-specificity transparent background",
+  /\.workspace-ribbon\s+\.clickable-icon\.side-dock-ribbon-action:hover\s*\{[^}]*background-color:\s*transparent/i,
+  "Ribbon hover must remain on one stable transparent layer",
+);
+assert.match(
+  css,
+  /\.workspace-ribbon\s+\.clickable-icon\.side-dock-ribbon-action:is\(\s*:active,\s*\.is-active\s*\)\s*\{[^}]*background-color:\s*transparent/i,
+  "Ribbon active states must use color instead of a flashing background layer",
 );
 assert.doesNotMatch(css, /@import|https?:\/\//i, "theme.css must not load remote resources");
 assert.doesNotMatch(css, /\/Users\/|[A-Z]:\\/i, "theme.css must not contain private paths");

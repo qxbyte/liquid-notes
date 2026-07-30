@@ -10,6 +10,21 @@
       .workspace .mod-root .workspace-tab-header.is-active {
         box-shadow: 0 0 0 1px rgba(60, 60, 67, 0.14);
       }
+
+      .workspace-ribbon .side-dock-ribbon-action {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.12));
+        box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.12);
+      }
+
+      .workspace-ribbon .side-dock-ribbon-action::before,
+      .workspace-ribbon .side-dock-ribbon-action::after {
+        content: "";
+        background-color: rgba(0, 0, 0, 0.12);
+      }
+
+      .workspace-ribbon .side-dock-ribbon-action > .svg-icon {
+        filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
+      }
     </style>
     <link rel="stylesheet" href="../theme.css">
     <title>Liquid Notes CSS fixture</title>
@@ -21,7 +36,12 @@
       </header>
       <nav class="workspace-ribbon mod-left">
         <div class="side-dock-actions">
-          <button id="light-ribbon-button" class="clickable-icon side-dock-ribbon-action" aria-label="Graph">◇</button>
+          <button id="light-ribbon-button" class="clickable-icon side-dock-ribbon-action" aria-label="Graph">
+            <svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14"></rect></svg>
+          </button>
+          <button id="light-ribbon-active" class="clickable-icon side-dock-ribbon-action is-active" aria-label="Active graph">
+            <svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"></circle></svg>
+          </button>
         </div>
       </nav>
       <div class="workspace-split mod-root">
@@ -291,9 +311,18 @@
       if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
         expectStyleIncludes("#light-ribbon-button", "transitionDuration", "0.07s");
       }
-      expectStyleExcludes("#light-ribbon-button", "transitionProperty", "background-color");
-      expectStyleExcludes("#light-ribbon-button", "transitionProperty", "box-shadow");
+      expectStyle("#light-ribbon-button", "transitionProperty", "color");
       expectStyle("#light-ribbon-button", "backgroundColor", "rgba(0, 0, 0, 0)");
+      expectStyle("#light-ribbon-button", "backgroundImage", "none");
+      expectStyle("#light-ribbon-button", "boxShadow", "none");
+      expectStyle("#light-ribbon-button", "filter", "none");
+      expectStyle("#light-ribbon-button", "transform", "none");
+      expectStyle("#light-ribbon-button .svg-icon", "filter", "none");
+      expectStyle("#light-ribbon-button .svg-icon", "boxShadow", "none");
+      expectPseudoStyle("#light-ribbon-button", "::before", "content", "none");
+      expectPseudoStyle("#light-ribbon-button", "::after", "content", "none");
+      expectStyle("#light-ribbon-active", "backgroundColor", "rgba(0, 0, 0, 0)");
+      expectStyle("#light-ribbon-active", "transform", "none");
       if (!focusTarget.matches(":focus-visible")) failures.push("#light-toolbar-button: expected :focus-visible after keyboard-style autofocus");
       expectMinPixels("#light-toolbar-button", "outlineWidth", 2);
       const groupedFocusTarget = document.querySelector("#light-view-menu");
