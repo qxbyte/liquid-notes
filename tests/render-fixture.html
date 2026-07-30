@@ -25,6 +25,11 @@
       .workspace-ribbon .side-dock-ribbon-action > .svg-icon {
         filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
       }
+
+      .view-actions {
+        min-height: 37px;
+        flex-shrink: 1;
+      }
     </style>
     <link rel="stylesheet" href="../theme.css">
     <title>Liquid Notes CSS fixture</title>
@@ -44,6 +49,16 @@
           </button>
         </div>
       </nav>
+      <div id="light-file-toolbar" class="nav-buttons-container">
+        <button id="light-file-action" class="clickable-icon nav-action-button">N</button>
+        <button class="clickable-icon nav-action-button">F</button>
+        <button class="clickable-icon nav-action-button">S</button>
+      </div>
+      <div id="light-git-toolbar" class="nav-buttons-container">
+        <button id="light-git-action" class="clickable-icon nav-action-button">↑</button>
+        <button class="clickable-icon nav-action-button">✓</button>
+        <button class="clickable-icon nav-action-button">↻</button>
+      </div>
       <div class="workspace-split mod-root">
         <div class="workspace-tab-header-container">
           <div class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
@@ -211,6 +226,11 @@
         if (!Number.isFinite(actual) || actual > maximum) failures.push(`${selector} ${property}: expected at most ${maximum}px, got ${style(selector)[property]}`);
       };
 
+      const expectRectPixels = (selector, dimension, expected) => {
+        const actual = document.querySelector(selector).getBoundingClientRect()[dimension];
+        if (Math.abs(actual - expected) > 0.01) failures.push(`${selector} rect ${dimension}: expected ${expected}px, got ${actual}px`);
+      };
+
       const expectSameColor = (leftSelector, rightSelector) => {
         const left = style(leftSelector).color;
         const right = style(rightSelector).color;
@@ -287,18 +307,31 @@
       expectNotTransparent("#light-root .workspace-tab-header.is-active");
       expectNotTransparent("#dark-root .workspace-tab-header.is-active");
       expectMinPixels("#light-root .mod-root .workspace-tab-header.is-active", "borderRadius", 14);
-      for (const selector of ["#light-nav-group", "#light-view-actions", "#dark-nav-group", "#dark-view-actions"]) {
+      for (const selector of ["#light-file-toolbar", "#light-git-toolbar", "#light-nav-group", "#light-view-actions", "#dark-nav-group", "#dark-view-actions"]) {
         expectNotTransparent(selector);
         expectMinPixels(selector, "borderRadius", 14);
         expectMinPixels(selector, "borderTopWidth", 1);
         expectStyleExcludes(selector, "boxShadow", "none");
+        expectStyle(selector, "flexShrink", "0");
+      }
+      for (const selector of ["#light-file-action", "#light-git-action", "#light-nav-back", "#light-view-menu"]) {
+        expectStyle(selector, "boxShadow", "none");
+      }
+      if (window.innerWidth > 800) {
+        for (const selector of ["#light-file-toolbar", "#light-git-toolbar", "#light-nav-group", "#light-view-actions"]) {
+          expectStyle(selector, "height", "32px");
+          expectRectPixels(selector, "height", 32);
+        }
+        for (const selector of ["#light-file-action", "#light-git-action", "#light-nav-back", "#light-view-menu"]) {
+          expectRectPixels(selector, "width", 28);
+          expectRectPixels(selector, "height", 28);
+        }
       }
       expectMinPixels("#light-view-title", "borderRadius", 14);
       expectMinPixels("#dark-view-title", "borderRadius", 14);
       expectStyle("#light-view-active", "color", "rgb(0, 122, 255)");
       expectStyle("#dark-view-active", "color", "rgb(10, 132, 255)");
       expectStyle("#light-view-active", "transform", "none");
-      expectStyleIncludes("#light-nav-back", "boxShadow", "inset");
       expectNotTransparent("#light-root .nav-file-title.is-active");
       expectMinPixels("#light-root .nav-file-title.is-active", "borderRadius", 7);
       expectPseudoSameColor("#light-root .nav-folder-title-content", "::before");
@@ -383,10 +416,13 @@
 
       if (window.innerWidth <= 800) {
         expectMinPixels("#light-toolbar-button", "height", 44);
-        expectMinPixels("#light-nav-back", "width", 44);
-        expectMinPixels("#light-nav-back", "height", 44);
-        expectMinPixels("#light-view-menu", "width", 44);
-        expectMinPixels("#light-view-menu", "height", 44);
+        for (const selector of ["#light-file-toolbar", "#light-git-toolbar", "#light-nav-group", "#light-view-actions"]) {
+          expectRectPixels(selector, "height", 46);
+        }
+        for (const selector of ["#light-file-action", "#light-git-action", "#light-nav-back", "#light-view-menu"]) {
+          expectRectPixels(selector, "width", 44);
+          expectRectPixels(selector, "height", 44);
+        }
         expectMinPixels("#mobile-action", "height", 44);
         expectStyleIncludes("#light-sidebar", "backdropFilter", "blur(14px)");
       }
@@ -399,6 +435,8 @@
       if (matchMedia("(prefers-reduced-transparency: reduce)").matches) {
         for (const selector of [
           "#light-sidebar",
+          "#light-file-toolbar",
+          "#light-git-toolbar",
           "#light-nav-group",
           "#light-view-actions",
           "#light-root .canvas-controls",

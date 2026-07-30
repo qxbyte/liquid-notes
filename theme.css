@@ -341,8 +341,16 @@ textarea:focus-visible,
 
 /* Xcode-style segmented toolbar controls -------------------------------- */
 
-.view-header-nav-buttons,
-.view-actions {
+:is(.nav-buttons-container, .view-header-nav-buttons, .view-actions) {
+  box-sizing: border-box;
+  display: flex;
+  width: max-content;
+  height: 32px;
+  min-height: 32px;
+  flex: 0 0 auto;
+  align-self: center;
+  align-items: center;
+  justify-content: flex-start;
   gap: 0;
   padding: 1px;
   overflow: hidden;
@@ -354,34 +362,33 @@ textarea:focus-visible,
   backdrop-filter: saturate(1.25) blur(18px);
 }
 
-:is(.view-header-nav-buttons, .view-actions) > .clickable-icon {
+:is(.nav-buttons-container, .view-header-nav-buttons, .view-actions) > .clickable-icon {
+  box-sizing: border-box;
   width: 28px;
   height: 28px;
   min-width: 28px;
   min-height: 28px;
+  flex: 0 0 28px;
   border: 0;
   border-radius: var(--ln-radius-pill);
   background-color: transparent;
+  box-shadow: none;
 }
 
-:is(.view-header-nav-buttons, .view-actions) > .clickable-icon:not(:last-child) {
-  box-shadow: inset -1px 0 var(--ln-separator);
-}
-
-:is(.view-header-nav-buttons, .view-actions) > .clickable-icon:hover {
+:is(.nav-buttons-container, .view-header-nav-buttons, .view-actions) > .clickable-icon:hover {
   background-color: var(--background-modifier-hover);
 }
 
-:is(.view-header-nav-buttons, .view-actions) > .clickable-icon:focus-visible {
+:is(.nav-buttons-container, .view-header-nav-buttons, .view-actions) > .clickable-icon:focus-visible {
   outline-offset: -3px;
 }
 
-:is(.view-header-nav-buttons, .view-actions) > .clickable-icon.is-active {
+:is(.nav-buttons-container, .view-header-nav-buttons, .view-actions) > .clickable-icon.is-active {
   color: var(--icon-color-active);
   background-color: var(--ln-control-active);
 }
 
-:is(.view-header-nav-buttons, .view-actions) > .clickable-icon[aria-disabled="true"] {
+:is(.nav-buttons-container, .view-header-nav-buttons, .view-actions) > .clickable-icon[aria-disabled="true"] {
   color: var(--text-faint);
   background-color: transparent;
   opacity: 0.48;
@@ -479,11 +486,6 @@ textarea:focus-visible,
 
 .nav-header {
   padding: 7px 9px 4px;
-}
-
-.nav-buttons-container {
-  gap: 3px;
-  justify-content: flex-start;
 }
 
 .nav-files-container,
@@ -1403,17 +1405,25 @@ kbd,
     min-height: 44px;
   }
 
-  :is(.view-header-nav-buttons, .view-actions) > .clickable-icon {
+  :is(.nav-buttons-container, .view-header-nav-buttons, .view-actions) {
+    height: 46px;
+    min-height: 46px;
+    padding: 0;
+  }
+
+  :is(.nav-buttons-container, .view-header-nav-buttons, .view-actions) > .clickable-icon {
     width: 44px;
     height: 44px;
     min-width: 44px;
     min-height: 44px;
+    flex-basis: 44px;
   }
 
   .workspace-split.mod-left-split,
   .workspace-split.mod-right-split,
   .titlebar,
   .workspace-tab-header-container,
+  .nav-buttons-container,
   .view-header-nav-buttons,
   .view-actions,
   .status-bar,
@@ -1443,6 +1453,7 @@ kbd,
   .workspace-split.mod-right-split,
   .titlebar,
   .workspace-tab-header-container,
+  .nav-buttons-container,
   .view-header-nav-buttons,
   .view-actions,
   .status-bar,
@@ -1463,6 +1474,7 @@ kbd,
   .workspace-split.mod-right-split,
   .titlebar,
   .workspace-tab-header-container,
+  .nav-buttons-container,
   .view-header-nav-buttons,
   .view-actions,
   .status-bar,
