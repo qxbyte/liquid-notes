@@ -11,6 +11,12 @@
         box-shadow: 0 0 0 1px rgba(60, 60, 67, 0.14);
       }
 
+      .workspace .mod-root .workspace-tab-header-container-inner {
+        display: flex;
+        height: 30px;
+        align-items: stretch;
+      }
+
       .workspace .mod-root .workspace-tab-header-container .workspace-tab-header::before,
       .workspace .mod-root .workspace-tab-header-container .workspace-tab-header::after {
         width: 12px;
@@ -71,8 +77,10 @@
       </div>
       <div class="workspace-split mod-root">
         <div class="workspace-tab-header-container">
-          <div id="light-tab-active" class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
-          <div id="light-tab-inactive" class="workspace-tab-header"><span class="workspace-tab-header-inner-title">Inactive</span></div>
+          <div class="workspace-tab-header-container-inner">
+            <div id="light-tab-active" class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
+            <div id="light-tab-inactive" class="workspace-tab-header"><span class="workspace-tab-header-inner-title">Inactive</span></div>
+          </div>
         </div>
       </div>
       <div class="view-header">
@@ -154,7 +162,9 @@
       </nav>
       <div class="workspace-split mod-root">
         <div class="workspace-tab-header-container">
-          <div id="dark-tab-active" class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
+          <div class="workspace-tab-header-container-inner">
+            <div id="dark-tab-active" class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
+          </div>
         </div>
       </div>
       <div class="view-header">

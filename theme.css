@@ -546,6 +546,12 @@ textarea:focus-visible,
   border-radius: var(--ln-radius-pill);
 }
 
+@media (min-width: 801px) {
+  .workspace .mod-root .workspace-tab-header {
+    height: 28px;
+  }
+}
+
 .workspace .mod-root .workspace-tab-header:hover {
   border-color: color-mix(in srgb, var(--ln-control-group-border) 68%, transparent);
   background-color: var(--background-modifier-hover);
