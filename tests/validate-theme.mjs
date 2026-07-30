@@ -35,6 +35,12 @@ assert.match(
   /Permission to use, copy, modify, and\/or distribute this software/i,
   "Distributed theme.css must carry Lucide's ISC permission notice",
 );
+const encodedSvgNamespace = "xmlns=%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27";
+assert.equal(
+  css.split(encodedSvgNamespace).length - 1,
+  2,
+  "Both embedded Lucide folder masks must carry a percent-encoded SVG namespace",
+);
 assert.match(
   css,
   /\.workspace-ribbon\s+\.clickable-icon\.side-dock-ribbon-action:hover\s*\{[^}]*background-color:\s*transparent/i,
@@ -126,6 +132,7 @@ const runBrowserFixture = (label, extraArguments = []) => {
       "--no-first-run",
       "--no-default-browser-check",
       ...extraArguments,
+      "--virtual-time-budget=1000",
       "--dump-dom",
       `file://${path.join(root, "tests/render-fixture.html")}`,
     ], { encoding: "utf8", maxBuffer: 10 * 1024 * 1024, timeout: 10_000 });

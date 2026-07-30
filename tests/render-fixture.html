@@ -560,13 +560,36 @@
         }
       }
 
-      document.querySelector("#test-results").textContent = JSON.stringify({
-        failures,
-        media: {
-          reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,
-          reducedTransparency: matchMedia("(prefers-reduced-transparency: reduce)").matches,
-        },
-      });
+      const expectMaskDecodes = async (selector, pseudo = "::before") => {
+        const mask = pseudoStyle(selector, pseudo).maskImage;
+        const url = mask.match(/^url\(["']?(.*?)["']?\)$/)?.[1];
+        if (!url) {
+          failures.push(`${selector}${pseudo} maskImage: expected a data URL, got ${mask}`);
+          return;
+        }
+        const image = new Image();
+        image.src = url;
+        try {
+          await image.decode();
+        } catch (error) {
+          failures.push(`${selector}${pseudo} mask image failed to decode: ${error.message}`);
+        }
+      };
+
+      const finish = async () => {
+        await Promise.all([
+          expectMaskDecodes("#light-folder-collapsed .nav-folder-title-content"),
+          expectMaskDecodes("#light-folder-open .nav-folder-title-content"),
+        ]);
+        document.querySelector("#test-results").textContent = JSON.stringify({
+          failures,
+          media: {
+            reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,
+            reducedTransparency: matchMedia("(prefers-reduced-transparency: reduce)").matches,
+          },
+        });
+      };
+      void finish();
     </script>
   </body>
 </html>
