@@ -6,6 +6,9 @@ All notable changes to Liquid Notes are documented in this file. The project fol
 
 ### Changed
 
+- Tightened root tabs to a clean 28px pill with shadow-free hover feedback and a crisp active micro-shadow.
+- Reduced desktop toolbar groups to 28px with 26px controls and added paired Vault footer capsules.
+- Fixed Electron rendering of the embedded Lucide closed/open folder masks.
 - Shortened Ribbon hover recovery to 70 ms and removed the lingering background fade.
 - Grouped top navigation and view actions into restrained Xcode-style floating capsules.
 - Added pill-shaped active root tabs and title focus states with macOS system-blue accents.
