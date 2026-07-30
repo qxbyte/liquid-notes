@@ -121,7 +121,12 @@
         </section>
       </section>
       <aside id="light-sidebar" class="workspace-split mod-left-split">
-        <div class="nav-folder-title is-active"><span class="nav-folder-title-content">Folder</span></div>
+        <div id="light-folder-collapsed" class="tree-item nav-folder is-collapsed">
+          <div class="tree-item-self nav-folder-title is-active"><span class="nav-folder-title-content">Collapsed</span></div>
+        </div>
+        <div id="light-folder-open" class="tree-item nav-folder">
+          <div class="tree-item-self nav-folder-title"><span class="nav-folder-title-content">Open</span></div>
+        </div>
         <div class="nav-file-title is-active">File</div>
         <div class="search-input-container"><input type="search" placeholder="Search"></div>
       </aside>
@@ -184,7 +189,12 @@
         <section class="setting-item"><div class="setting-item-control"><input type="text" value="Liquid Notes"><button>Apply</button><button id="dark-cta" class="mod-cta">Install</button></div></section>
       </section>
       <aside id="dark-sidebar" class="workspace-split mod-left-split">
-        <div class="nav-folder-title is-active"><span class="nav-folder-title-content">Folder</span></div>
+        <div id="dark-folder-collapsed" class="tree-item nav-folder is-collapsed">
+          <div class="tree-item-self nav-folder-title is-active"><span class="nav-folder-title-content">Collapsed</span></div>
+        </div>
+        <div id="dark-folder-open" class="tree-item nav-folder">
+          <div class="tree-item-self nav-folder-title"><span class="nav-folder-title-content">Open</span></div>
+        </div>
         <div class="nav-file-title is-active">File</div>
         <div class="search-input-container"><input type="search" placeholder="Search"></div>
       </aside>
@@ -282,6 +292,17 @@
         if (actual.includes(unexpected.toLowerCase())) failures.push(`${selector}${pseudo} ${property}: expected not to include ${unexpected}, got ${actual}`);
       };
 
+      const expectPseudoStyleNot = (selector, pseudo, property, unexpected) => {
+        const actual = pseudoStyle(selector, pseudo)[property].toLowerCase();
+        if (actual === unexpected.toLowerCase()) failures.push(`${selector}${pseudo} ${property}: expected a value other than ${unexpected}`);
+      };
+
+      const expectDifferentPseudoProperty = (leftSelector, rightSelector, pseudo, property) => {
+        const left = pseudoStyle(leftSelector, pseudo)[property];
+        const right = pseudoStyle(rightSelector, pseudo)[property];
+        if (left === right) failures.push(`${leftSelector}${pseudo} and ${rightSelector}${pseudo} share ${property}: ${left}`);
+      };
+
       const expectPseudoSameColor = (selector, pseudo) => {
         const actual = pseudoStyle(selector, pseudo).color;
         const expected = style(selector).color;
@@ -349,10 +370,23 @@
       expectStyle("#light-view-active", "transform", "none");
       expectNotTransparent("#light-root .nav-file-title.is-active");
       expectMinPixels("#light-root .nav-file-title.is-active", "borderRadius", 7);
-      expectPseudoSameColor("#light-root .nav-folder-title-content", "::before");
-      expectPseudoSameColor("#dark-root .nav-folder-title-content", "::before");
-      expectPseudoStyle("#light-root .nav-folder-title-content", "::before", "borderTopStyle", "solid");
-      expectPseudoStyleExcludes("#light-root .nav-folder-title-content", "::before", "backgroundImage", "linear-gradient");
+      expectStyleIncludes("#light-folder-collapsed .nav-folder-title-content", "display", "flex");
+      expectPseudoSameColor("#light-folder-collapsed .nav-folder-title-content", "::before");
+      expectPseudoSameColor("#dark-folder-open .nav-folder-title-content", "::before");
+      expectPseudoStyleNot("#light-folder-collapsed .nav-folder-title-content", "::before", "maskImage", "none");
+      expectPseudoStyleNot("#light-folder-open .nav-folder-title-content", "::before", "maskImage", "none");
+      expectDifferentPseudoProperty(
+        "#light-folder-collapsed .nav-folder-title-content",
+        "#light-folder-open .nav-folder-title-content",
+        "::before",
+        "maskImage",
+      );
+      for (const selector of ["#light-folder-collapsed .nav-folder-title-content", "#light-folder-open .nav-folder-title-content"]) {
+        expectPseudoStyle(selector, "::before", "borderTopStyle", "none");
+        expectPseudoStyle(selector, "::before", "boxShadow", "none");
+        expectPseudoStyle(selector, "::before", "clipPath", "none");
+        expectPseudoStyle(selector, "::before", "backgroundImage", "none");
+      }
       expectMinPixels("#light-root .search-input-container input", "borderRadius", 7);
       expectMinPixels("#light-toolbar-button", "width", 28);
       expectMinPixels("#light-toolbar-button", "height", 28);

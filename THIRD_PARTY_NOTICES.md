@@ -2,7 +2,7 @@
 
 ## Lucide
 
-Liquid Notes styles the Lucide icon elements already provided by Obsidian. It does not redistribute Apple SF Symbols or Apple Design Resources. The decorative folder and document marks in `theme.css` are original CSS shapes.
+Liquid Notes styles the Lucide icon elements already provided by Obsidian and embeds the Lucide `folder` and `folder-open` SVG paths as CSS masks. It does not redistribute Apple SF Symbols or Apple Design Resources. The decorative document mark in `theme.css` remains an original CSS shape.
 
 Lucide is available from <https://lucide.dev/> under the ISC License:
 
