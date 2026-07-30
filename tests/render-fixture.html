@@ -11,8 +11,8 @@
         box-shadow: 0 0 0 1px rgba(60, 60, 67, 0.14);
       }
 
-      .workspace .mod-root .workspace-tab-header-container .workspace-tab-header.is-active::before,
-      .workspace .mod-root .workspace-tab-header-container .workspace-tab-header.is-active::after {
+      .workspace .mod-root .workspace-tab-header-container .workspace-tab-header::before,
+      .workspace .mod-root .workspace-tab-header-container .workspace-tab-header::after {
         width: 12px;
         height: 12px;
         content: "";
@@ -71,8 +71,8 @@
       </div>
       <div class="workspace-split mod-root">
         <div class="workspace-tab-header-container">
-          <div class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
-          <div class="workspace-tab-header"><span class="workspace-tab-header-inner-title">Inactive</span></div>
+          <div id="light-tab-active" class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
+          <div id="light-tab-inactive" class="workspace-tab-header"><span class="workspace-tab-header-inner-title">Inactive</span></div>
         </div>
       </div>
       <div class="view-header">
@@ -144,7 +144,7 @@
       </nav>
       <div class="workspace-split mod-root">
         <div class="workspace-tab-header-container">
-          <div class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
+          <div id="dark-tab-active" class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
         </div>
       </div>
       <div class="view-header">
@@ -338,11 +338,22 @@
       expectNotTransparent("#light-root .workspace-tab-header.is-active");
       expectNotTransparent("#dark-root .workspace-tab-header.is-active");
       expectMinPixels("#light-root .mod-root .workspace-tab-header.is-active", "borderRadius", 14);
-      for (const pseudo of ["::before", "::after"]) {
-        expectPseudoStyle("#light-root .mod-root .workspace-tab-header.is-active", pseudo, "content", "none");
-        expectPseudoStyle("#light-root .mod-root .workspace-tab-header.is-active", pseudo, "boxShadow", "none");
-        expectPseudoStyle("#light-root .mod-root .workspace-tab-header.is-active", pseudo, "clipPath", "none");
+      for (const selector of ["#light-tab-active", "#light-tab-inactive"]) {
+        for (const pseudo of ["::before", "::after"]) {
+          expectPseudoStyle(selector, pseudo, "content", "none");
+          expectPseudoStyle(selector, pseudo, "boxShadow", "none");
+          expectPseudoStyle(selector, pseudo, "clipPath", "none");
+        }
       }
+      if (window.innerWidth > 800) {
+        expectRectPixels("#light-tab-active", "height", 28);
+        expectRectPixels("#light-tab-inactive", "height", 28);
+      }
+      expectStyleIncludes("#light-tab-active", "boxShadow", "0px 1px 3px");
+      expectStyleExcludes("#light-tab-active", "boxShadow", "0px 2px 8px");
+      expectStyleIncludes("#dark-tab-active", "boxShadow", "0px 1px 4px");
+      expectStyleExcludes("#dark-tab-active", "boxShadow", "0px 2px 10px");
+      expectStyle("#light-tab-inactive", "boxShadow", "none");
       for (const selector of ["#light-file-toolbar", "#light-git-toolbar", "#light-nav-group", "#light-view-actions", "#dark-nav-group", "#dark-view-actions"]) {
         expectNotTransparent(selector);
         expectMinPixels(selector, "borderRadius", 14);

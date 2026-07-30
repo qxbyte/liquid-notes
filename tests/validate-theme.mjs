@@ -45,6 +45,11 @@ assert.match(
   /\.workspace-ribbon\s+\.clickable-icon\.side-dock-ribbon-action:is\(\s*:active,\s*\.is-active\s*\)\s*\{[^}]*background-color:\s*transparent/i,
   "Ribbon active states must use color instead of a flashing background layer",
 );
+assert.match(
+  css,
+  /\.workspace\s+\.mod-root\s+\.workspace-tab-header:hover\s*\{[^}]*box-shadow:\s*none/i,
+  "Root tab hover must not create a diffuse shadow",
+);
 assert.doesNotMatch(css, /@import|https?:\/\//i, "theme.css must not load remote resources");
 assert.doesNotMatch(css, /\/Users\/|[A-Z]:\\/i, "theme.css must not contain private paths");
 assert.doesNotMatch(css, /!important/i, "theme.css must remain user-overridable without !important");
