@@ -46,11 +46,18 @@
         min-height: 37px;
         flex-shrink: 1;
       }
+
+      body:not(.is-mobile) .workspace-split.mod-left-split .workspace-sidedock-vault-profile .workspace-drawer-vault-switcher {
+        border-radius: var(--radius-s);
+      }
     </style>
     <link rel="stylesheet" href="../theme.css">
     <title>Liquid Notes CSS fixture</title>
   </head>
   <body>
+    <script>
+      if (window.innerWidth <= 800) document.body.classList.add("is-mobile");
+    </script>
     <main id="light-root" class="theme-light workspace">
       <header class="titlebar">
         <button id="light-toolbar-button" class="clickable-icon" autofocus aria-label="Sidebar">◫</button>

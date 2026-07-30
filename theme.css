@@ -449,6 +449,10 @@ textarea:focus-visible,
   padding: 0 9px;
 }
 
+body:not(.is-mobile) .workspace-split.mod-left-split .workspace-sidedock-vault-profile .workspace-drawer-vault-switcher {
+  border-radius: var(--ln-radius-pill);
+}
+
 .workspace-drawer-vault-actions {
   flex: 0 0 auto;
   gap: 0;
