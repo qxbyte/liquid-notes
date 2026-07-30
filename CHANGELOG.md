@@ -14,6 +14,7 @@ All notable changes to Liquid Notes are documented in this file. The project fol
 - Removed Obsidian tab corner ears and Ribbon shadow artifacts found during real-app QA.
 - Unified file, Git, navigation, and view-action toolbars as height-matched native capsules.
 - Added distinct Lucide closed/open folder states.
+- Pinned embedded Lucide icons to v1.27.0 and included the ISC notice in the distributed theme file.
 
 ## [1.0.0] - 2026-07-29
 

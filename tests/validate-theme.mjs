@@ -18,6 +18,23 @@ assert.deepEqual(manifest, {
 });
 
 const css = await read("theme.css");
+assert.match(css, /Lucide Icons v1\.27\.0/i, "Distributed theme.css must pin the embedded Lucide icon version");
+assert.match(
+  css,
+  /4aec3f892fd6c23063bc2fead83c899b5d412b1c/i,
+  "Distributed theme.css must pin the embedded Lucide source commit",
+);
+assert.match(css, /ISC License/i, "Distributed theme.css must carry the Lucide ISC license");
+assert.match(
+  css,
+  /Copyright \(c\) 2026 Lucide Icons and Contributors/i,
+  "Distributed theme.css must carry Lucide's pinned copyright notice",
+);
+assert.match(
+  css,
+  /Permission to use, copy, modify, and\/or distribute this software/i,
+  "Distributed theme.css must carry Lucide's ISC permission notice",
+);
 assert.match(
   css,
   /\.workspace-ribbon\s+\.clickable-icon\.side-dock-ribbon-action:hover\s*\{[^}]*background-color:\s*transparent/i,
@@ -125,6 +142,21 @@ runBrowserFixture("reduced motion", ["--force-prefers-reduced-motion"]);
 const thirdPartyNotices = await read("THIRD_PARTY_NOTICES.md");
 assert.match(thirdPartyNotices, /Lucide/i, "Icon notice must identify Lucide");
 assert.match(thirdPartyNotices, /ISC License/i, "Icon notice must include Lucide's ISC license");
+assert.match(thirdPartyNotices, /v1\.27\.0/i, "Icon notice must pin the Lucide source version");
+assert.match(
+  thirdPartyNotices,
+  /4aec3f892fd6c23063bc2fead83c899b5d412b1c/i,
+  "Icon notice must pin the Lucide source commit",
+);
+assert.match(
+  thirdPartyNotices,
+  /Copyright \(c\) 2026 Lucide Icons and Contributors/i,
+  "Icon notice must match the pinned Lucide copyright notice",
+);
+
+const readme = await read("README.md");
+assert.match(readme, /embed(?:s|ded) Lucide `folder` and `folder-open` masks/i, "README must accurately attribute embedded folder icons");
+assert.match(readme, /document mark as an original CSS shape/i, "README must identify the remaining original CSS icon");
 
 const showcase = await read("tests/showcase.md");
 for (const language of ["swift", "javascript", "python", "json", "bash", "css"]) {
