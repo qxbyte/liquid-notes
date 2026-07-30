@@ -70,6 +70,8 @@ for (const selector of [
   ".nav-buttons-container",
   ".view-header-nav-buttons",
   ".view-actions",
+  ".workspace-drawer-vault-switcher",
+  ".workspace-drawer-vault-actions",
   ".canvas-controls",
   ".canvas-card-menu",
   ".graph-controls",
@@ -85,7 +87,13 @@ const unsupportedBlurStart = css.indexOf("@supports not ((backdrop-filter: blur(
 const reducedTransparencyMediaStart = css.indexOf("@media (prefers-reduced-transparency: reduce)", unsupportedBlurStart);
 assert.ok(unsupportedBlurStart >= 0 && reducedTransparencyMediaStart > unsupportedBlurStart, "Unsupported-blur fallback block must exist");
 const unsupportedBlurBlock = css.slice(unsupportedBlurStart, reducedTransparencyMediaStart);
-for (const selector of [".nav-buttons-container", ".view-header-nav-buttons", ".view-actions"]) {
+for (const selector of [
+  ".nav-buttons-container",
+  ".view-header-nav-buttons",
+  ".view-actions",
+  ".workspace-drawer-vault-switcher",
+  ".workspace-drawer-vault-actions",
+]) {
   assert.ok(unsupportedBlurBlock.includes(selector), `Unsupported-blur fallback must cover ${selector}`);
 }
 

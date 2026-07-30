@@ -419,6 +419,65 @@ textarea:focus-visible,
   transform: none;
 }
 
+/* Vault footer capsules --------------------------------------------------- */
+
+.workspace-sidedock-vault-profile {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.workspace-drawer-vault-switcher,
+.workspace-drawer-vault-actions {
+  box-sizing: border-box;
+  display: flex;
+  height: 28px;
+  min-height: 28px;
+  align-items: center;
+  border: 1px solid var(--ln-control-group-border);
+  border-radius: var(--ln-radius-pill);
+  background-color: var(--ln-control-group);
+  box-shadow: var(--ln-shadow-compact-control);
+  -webkit-backdrop-filter: saturate(1.25) blur(18px);
+  backdrop-filter: saturate(1.25) blur(18px);
+}
+
+.workspace-drawer-vault-switcher {
+  min-width: 0;
+  flex: 1 1 auto;
+  gap: 7px;
+  padding: 0 9px;
+}
+
+.workspace-drawer-vault-actions {
+  flex: 0 0 auto;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.workspace-drawer-vault-actions > .clickable-icon {
+  box-sizing: border-box;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  min-height: 26px;
+  flex: 0 0 26px;
+  border: 0;
+  border-radius: var(--ln-radius-pill);
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.workspace-drawer-vault-switcher:hover,
+.workspace-drawer-vault-actions > .clickable-icon:hover {
+  background-color: var(--background-modifier-hover);
+}
+
+.workspace-drawer-vault-actions > .clickable-icon:focus-visible {
+  outline-offset: -3px;
+}
+
 .view-header-title {
   min-height: 28px;
   padding: 3px 9px;
@@ -1476,6 +1535,20 @@ kbd,
     flex-basis: 44px;
   }
 
+  .workspace-drawer-vault-switcher,
+  .workspace-drawer-vault-actions {
+    height: 46px;
+    min-height: 46px;
+  }
+
+  .workspace-drawer-vault-actions > .clickable-icon {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    flex-basis: 44px;
+  }
+
   .workspace-split.mod-left-split,
   .workspace-split.mod-right-split,
   .titlebar,
@@ -1483,6 +1556,8 @@ kbd,
   .nav-buttons-container,
   .view-header-nav-buttons,
   .view-actions,
+  .workspace-drawer-vault-switcher,
+  .workspace-drawer-vault-actions,
   .status-bar,
   .menu,
   .modal,
@@ -1513,6 +1588,8 @@ kbd,
   .nav-buttons-container,
   .view-header-nav-buttons,
   .view-actions,
+  .workspace-drawer-vault-switcher,
+  .workspace-drawer-vault-actions,
   .status-bar,
   .menu,
   .modal,
@@ -1534,6 +1611,8 @@ kbd,
   .nav-buttons-container,
   .view-header-nav-buttons,
   .view-actions,
+  .workspace-drawer-vault-switcher,
+  .workspace-drawer-vault-actions,
   .status-bar,
   .menu,
   .modal,
