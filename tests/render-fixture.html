@@ -365,13 +365,20 @@
         expectStyle(selector, "boxShadow", "none");
       }
       if (window.innerWidth > 800) {
-        for (const selector of ["#light-file-toolbar", "#light-git-toolbar", "#light-nav-group", "#light-view-actions"]) {
-          expectStyle(selector, "height", "32px");
-          expectRectPixels(selector, "height", 32);
+        for (const selector of [
+          "#light-file-toolbar",
+          "#light-git-toolbar",
+          "#light-nav-group",
+          "#light-view-actions",
+          "#dark-nav-group",
+          "#dark-view-actions",
+        ]) {
+          expectStyle(selector, "height", "28px");
+          expectRectPixels(selector, "height", 28);
         }
         for (const selector of ["#light-file-action", "#light-git-action", "#light-nav-back", "#light-view-menu"]) {
-          expectRectPixels(selector, "width", 28);
-          expectRectPixels(selector, "height", 28);
+          expectRectPixels(selector, "width", 26);
+          expectRectPixels(selector, "height", 26);
         }
       }
       expectMinPixels("#light-view-title", "borderRadius", 14);
