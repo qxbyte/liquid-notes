@@ -64,6 +64,7 @@ const runBrowserFixture = (label, extraArguments = []) => {
       "--headless=new",
       "--no-sandbox",
       "--disable-gpu",
+      "--disable-dev-shm-usage",
       "--disable-background-networking",
       "--disable-extensions",
       "--no-first-run",
@@ -71,7 +72,7 @@ const runBrowserFixture = (label, extraArguments = []) => {
       ...extraArguments,
       "--dump-dom",
       `file://${path.join(root, "tests/render-fixture.html")}`,
-    ], { encoding: "utf8", maxBuffer: 10 * 1024 * 1024, timeout: 10_000 });
+    ], { encoding: "utf8", maxBuffer: 10 * 1024 * 1024, timeout: 30_000 });
 
     if (!result.error || result.error.code !== "ENOENT") {
       browserResult = result;
