@@ -51,6 +51,8 @@ body {
   --ln-shadow: 0 10px 34px rgba(40, 40, 50, 0.12), 0 1px 2px rgba(40, 40, 50, 0.08);
   --ln-shadow-control: 0 1px 1px rgba(0, 0, 0, 0.05), inset 0 1px rgba(255, 255, 255, 0.82);
   --ln-highlight: inset 0 1px rgba(255, 255, 255, 0.72);
+  --ln-notice-background: var(--ln-text);
+  --ln-notice-text: var(--ln-canvas);
 
   --background-primary: var(--ln-canvas);
   --background-primary-alt: var(--ln-canvas-alt);
@@ -132,6 +134,8 @@ body {
   --ln-shadow: 0 14px 42px rgba(0, 0, 0, 0.34), 0 1px 3px rgba(0, 0, 0, 0.28);
   --ln-shadow-control: 0 1px 2px rgba(0, 0, 0, 0.2), inset 0 1px rgba(255, 255, 255, 0.08);
   --ln-highlight: inset 0 1px rgba(255, 255, 255, 0.08);
+  --ln-notice-background: var(--ln-text);
+  --ln-notice-text: var(--ln-canvas);
 
   --background-primary: var(--ln-canvas);
   --background-primary-alt: var(--ln-canvas-alt);
@@ -215,6 +219,11 @@ body {
 .tooltip {
   -webkit-backdrop-filter: saturate(1.35) blur(var(--ln-blur));
   backdrop-filter: saturate(1.35) blur(var(--ln-blur));
+}
+
+.notice {
+  color: var(--ln-notice-text);
+  background-color: var(--ln-notice-background);
 }
 
 .titlebar {
