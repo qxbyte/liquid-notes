@@ -241,6 +241,15 @@ body {
   backdrop-filter: saturate(1.35) blur(var(--ln-blur));
 }
 
+.is-fullscreen .workspace-ribbon,
+.is-fullscreen .workspace-split.mod-left-split,
+.is-fullscreen .workspace-split.mod-right-split {
+  --ribbon-background: var(--background-secondary-alt);
+  background-color: var(--background-secondary-alt);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
 /* macOS window chrome ------------------------------------------------------ */
 
 .titlebar,

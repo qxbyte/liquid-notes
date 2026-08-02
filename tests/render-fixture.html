@@ -161,7 +161,7 @@
       <div class="tooltip">Tooltip</div>
       <div id="light-notice" class="notice">Light notification</div>
     </main>
-    <main id="dark-root" class="theme-dark workspace">
+    <main id="dark-root" class="theme-dark workspace is-fullscreen">
       <header class="titlebar"><button class="clickable-icon" aria-label="Sidebar">◫</button></header>
       <nav class="workspace-ribbon mod-left">
         <div class="side-dock-actions">
@@ -236,6 +236,7 @@
           </div>
         </div>
       </aside>
+      <aside id="dark-right-sidebar" class="workspace-split mod-right-split">Right sidebar</aside>
       <footer class="status-bar">Status</footer>
       <div class="menu"><div class="menu-item is-selected">Menu item</div></div>
       <div class="modal"><div class="modal-title">Modal</div></div>
@@ -489,6 +490,15 @@
       expectNotTransparent("#light-root .menu");
       expectNotTransparent("#light-root .modal");
       expectNotTransparent("#light-root .tooltip");
+      expectStyle("#dark-root .workspace-ribbon", "backgroundColor", "rgb(36, 36, 38)");
+      expectStyle("#dark-sidebar", "backgroundColor", "rgb(36, 36, 38)");
+      expectStyle("#dark-right-sidebar", "backgroundColor", "rgb(36, 36, 38)");
+      expectStyle("#dark-root .workspace-ribbon", "backdropFilter", "none");
+      expectStyle("#dark-sidebar", "backdropFilter", "none");
+      expectStyle("#dark-right-sidebar", "backdropFilter", "none");
+      if (!matchMedia("(prefers-reduced-transparency: reduce)").matches) {
+        expectStyleIncludes("#light-sidebar", "backdropFilter", "blur(");
+      }
       expectStyle("#light-notice", "backgroundColor", "rgb(29, 29, 31)");
       expectStyle("#light-notice", "color", "rgb(255, 255, 255)");
       expectStyle("#dark-notice", "backgroundColor", "rgb(245, 245, 247)");

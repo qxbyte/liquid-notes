@@ -56,6 +56,12 @@ assert.match(
   /\.workspace\s+\.mod-root\s+\.workspace-tab-header:hover\s*\{[^}]*box-shadow:\s*none/i,
   "Root tab hover must not create a diffuse shadow",
 );
+const fullscreenSidebarRule = css.match(/\.is-fullscreen\s+\.workspace-ribbon,[^{]+\{([^}]*)\}/i)?.[1] ?? "";
+assert.match(
+  fullscreenSidebarRule,
+  /-webkit-backdrop-filter:\s*none;/i,
+  "Fullscreen sidebar surfaces must disable WebKit blur",
+);
 assert.doesNotMatch(css, /@import|https?:\/\//i, "theme.css must not load remote resources");
 assert.doesNotMatch(css, /\/Users\/|[A-Z]:\\/i, "theme.css must not contain private paths");
 assert.doesNotMatch(css, /!important/i, "theme.css must remain user-overridable without !important");
