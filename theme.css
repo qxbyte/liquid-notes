@@ -78,6 +78,8 @@ body {
   --ln-shadow-compact-control: 0 1px 4px rgba(40, 40, 50, 0.09), inset 0 1px rgba(255, 255, 255, 0.86);
   --ln-shadow-tab: 0 1px 3px rgba(40, 40, 50, 0.1), inset 0 1px rgba(255, 255, 255, 0.9);
   --ln-highlight: inset 0 1px rgba(255, 255, 255, 0.72);
+  --ln-notice-background: var(--ln-text);
+  --ln-notice-text: var(--ln-canvas);
 
   --background-primary: var(--ln-canvas);
   --background-primary-alt: var(--ln-canvas-alt);
@@ -164,6 +166,8 @@ body {
   --ln-shadow-compact-control: 0 1px 5px rgba(0, 0, 0, 0.22), inset 0 1px rgba(255, 255, 255, 0.08);
   --ln-shadow-tab: 0 1px 4px rgba(0, 0, 0, 0.24), inset 0 1px rgba(255, 255, 255, 0.08);
   --ln-highlight: inset 0 1px rgba(255, 255, 255, 0.08);
+  --ln-notice-background: var(--ln-text);
+  --ln-notice-text: var(--ln-canvas);
 
   --background-primary: var(--ln-canvas);
   --background-primary-alt: var(--ln-canvas-alt);
@@ -247,6 +251,11 @@ body {
 .tooltip {
   -webkit-backdrop-filter: saturate(1.35) blur(var(--ln-blur));
   backdrop-filter: saturate(1.35) blur(var(--ln-blur));
+}
+
+.notice {
+  color: var(--ln-notice-text);
+  background-color: var(--ln-notice-background);
 }
 
 .titlebar {

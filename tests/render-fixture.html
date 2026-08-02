@@ -159,6 +159,7 @@
       <div class="menu"><div class="menu-item is-selected">Menu item</div></div>
       <div class="modal"><div class="modal-title">Modal</div></div>
       <div class="tooltip">Tooltip</div>
+      <div id="light-notice" class="notice">Light notification</div>
     </main>
     <main id="dark-root" class="theme-dark workspace">
       <header class="titlebar"><button class="clickable-icon" aria-label="Sidebar">◫</button></header>
@@ -239,6 +240,7 @@
       <div class="menu"><div class="menu-item is-selected">Menu item</div></div>
       <div class="modal"><div class="modal-title">Modal</div></div>
       <div class="tooltip">Tooltip</div>
+      <div id="dark-notice" class="notice">Dark notification</div>
     </main>
     <output id="test-results">pending</output>
     <script>
@@ -487,6 +489,12 @@
       expectNotTransparent("#light-root .menu");
       expectNotTransparent("#light-root .modal");
       expectNotTransparent("#light-root .tooltip");
+      expectStyle("#light-notice", "backgroundColor", "rgb(29, 29, 31)");
+      expectStyle("#light-notice", "color", "rgb(255, 255, 255)");
+      expectStyle("#dark-notice", "backgroundColor", "rgb(245, 245, 247)");
+      expectStyle("#dark-notice", "color", "rgb(28, 28, 30)");
+      expectContrast("#light-notice", 4.5);
+      expectContrast("#dark-notice", 4.5);
       expectNotTransparent("#light-root .markdown-reading-view");
       expectNotTransparent("#dark-root .markdown-reading-view");
       expectMaxPixels("#live-preview-heading", "marginTop", 0);
