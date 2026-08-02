@@ -30,7 +30,7 @@
 - Consumes: Obsidian's `.is-fullscreen` state class and existing `--background-secondary-alt` semantic color.
 - Produces: A fullscreen-only sidebar surface rule for `.workspace-ribbon`, `.workspace-split.mod-left-split`, and `.workspace-split.mod-right-split`.
 
-- [ ] **Step 1: Write the failing fullscreen computed-style test**
+- [x] **Step 1: Write the failing fullscreen computed-style test**
 
 Change the dark fixture root to simulate Obsidian fullscreen mode:
 
@@ -61,7 +61,7 @@ After the existing tooltip assertion, add fullscreen expectations and a guarded 
       }
 ```
 
-- [ ] **Step 2: Run the validator and confirm the fullscreen test fails**
+- [x] **Step 2: Run the validator and confirm the fullscreen test fails**
 
 Run:
 
@@ -71,7 +71,7 @@ node tests/validate-theme.mjs
 
 Expected: FAIL in the desktop fixture because the fullscreen ribbon is transparent and the fullscreen sidebar still has a translucent background and blur.
 
-- [ ] **Step 3: Add the fullscreen-only sidebar override**
+- [x] **Step 3: Add the fullscreen-only sidebar override**
 
 Add this rule after the base side-split styles and before the macOS window chrome section:
 
@@ -86,7 +86,7 @@ Add this rule after the base side-split styles and before the macOS window chrom
 }
 ```
 
-- [ ] **Step 4: Run the complete validator**
+- [x] **Step 4: Run the complete validator**
 
 Run:
 
@@ -96,7 +96,7 @@ node tests/validate-theme.mjs
 
 Expected: PASS with `Theme validation passed`.
 
-- [ ] **Step 5: Review and commit the implementation**
+- [x] **Step 5: Review and commit the implementation**
 
 Run:
 
@@ -109,7 +109,7 @@ git commit -m "fix: stabilize fullscreen sidebar surfaces" -m "Co-authored-by: C
 
 Expected: The implementation diff contains the fullscreen fixture state, a minimal right sidebar, fullscreen/windowed computed-style assertions, and one scoped CSS rule; the commit succeeds.
 
-- [ ] **Step 6: Back up and synchronize the local theme**
+- [x] **Step 6: Back up and synchronize the local theme**
 
 Run:
 
