@@ -2,18 +2,106 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <style>
+      .workspace .mod-root .workspace-tab-header {
+        border-radius: 7px;
+      }
+
+      .workspace .mod-root .workspace-tab-header.is-active {
+        box-shadow: 0 0 0 1px rgba(60, 60, 67, 0.14);
+      }
+
+      .workspace .mod-root .workspace-tab-header-container-inner {
+        display: flex;
+        height: 30px;
+        align-items: stretch;
+      }
+
+      .workspace .mod-root .workspace-tab-header-container .workspace-tab-header::before,
+      .workspace .mod-root .workspace-tab-header-container .workspace-tab-header::after {
+        width: 12px;
+        height: 12px;
+        content: "";
+        border-radius: 100%;
+        box-shadow: inset 0 0 0 1px rgba(60, 60, 67, 0.14), 0 0 0 24px #fff;
+        clip-path: inset(50% -6px 0 50%);
+      }
+
+      .workspace-ribbon .side-dock-ribbon-action {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.12));
+        box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.12);
+      }
+
+      .workspace-ribbon .side-dock-ribbon-action::before,
+      .workspace-ribbon .side-dock-ribbon-action::after {
+        content: "";
+        background-color: rgba(0, 0, 0, 0.12);
+      }
+
+      .workspace-ribbon .side-dock-ribbon-action > .svg-icon {
+        filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
+      }
+
+      .view-actions {
+        min-height: 37px;
+        flex-shrink: 1;
+      }
+
+      body:not(.is-mobile) .workspace-split.mod-left-split .workspace-sidedock-vault-profile .workspace-drawer-vault-switcher {
+        border-radius: var(--radius-s);
+      }
+    </style>
     <link rel="stylesheet" href="../theme.css">
     <title>Liquid Notes CSS fixture</title>
   </head>
   <body>
-    <main id="light-root" class="theme-light">
+    <script>
+      if (window.innerWidth <= 800) document.body.classList.add("is-mobile");
+    </script>
+    <main id="light-root" class="theme-light workspace">
       <header class="titlebar">
         <button id="light-toolbar-button" class="clickable-icon" autofocus aria-label="Sidebar">◫</button>
       </header>
-      <nav class="workspace-ribbon">Ribbon</nav>
-      <div class="workspace-tab-header-container">
-        <div class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
-        <div class="workspace-tab-header"><span class="workspace-tab-header-inner-title">Inactive</span></div>
+      <nav class="workspace-ribbon mod-left">
+        <div class="side-dock-actions">
+          <button id="light-ribbon-button" class="clickable-icon side-dock-ribbon-action" aria-label="Graph">
+            <svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14"></rect></svg>
+          </button>
+          <button id="light-ribbon-active" class="clickable-icon side-dock-ribbon-action is-active" aria-label="Active graph">
+            <svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"></circle></svg>
+          </button>
+        </div>
+      </nav>
+      <div id="light-file-toolbar" class="nav-buttons-container">
+        <button id="light-file-action" class="clickable-icon nav-action-button">N</button>
+        <button class="clickable-icon nav-action-button">F</button>
+        <button class="clickable-icon nav-action-button">S</button>
+      </div>
+      <div id="light-git-toolbar" class="nav-buttons-container">
+        <button id="light-git-action" class="clickable-icon nav-action-button">↑</button>
+        <button class="clickable-icon nav-action-button">✓</button>
+        <button class="clickable-icon nav-action-button">↻</button>
+      </div>
+      <div class="workspace-split mod-root">
+        <div class="workspace-tab-header-container">
+          <div class="workspace-tab-header-container-inner">
+            <div id="light-tab-active" class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
+            <div id="light-tab-inactive" class="workspace-tab-header"><span class="workspace-tab-header-inner-title">Inactive</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="view-header">
+        <div id="light-nav-group" class="view-header-nav-buttons">
+          <button id="light-nav-back" class="clickable-icon" aria-disabled="true">←</button>
+          <button class="clickable-icon" aria-disabled="true">→</button>
+        </div>
+        <div class="view-header-title-container">
+          <div id="light-view-title" class="view-header-title" tabindex="0">Liquid Notes</div>
+        </div>
+        <div id="light-view-actions" class="view-actions">
+          <button id="light-view-active" class="clickable-icon is-active">⌘</button>
+          <button id="light-view-menu" class="clickable-icon">•••</button>
+        </div>
       </div>
       <section id="light-canvas" class="workspace-leaf-content">
         <div class="markdown-source-view mod-cm6">
@@ -48,9 +136,24 @@
         </section>
       </section>
       <aside id="light-sidebar" class="workspace-split mod-left-split">
-        <div class="nav-folder-title is-active">Folder</div>
+        <div id="light-folder-collapsed" class="tree-item nav-folder is-collapsed">
+          <div class="tree-item-self nav-folder-title is-active"><span class="nav-folder-title-content">Collapsed</span></div>
+        </div>
+        <div id="light-folder-open" class="tree-item nav-folder">
+          <div class="tree-item-self nav-folder-title"><span class="nav-folder-title-content">Open</span></div>
+        </div>
         <div class="nav-file-title is-active">File</div>
         <div class="search-input-container"><input type="search" placeholder="Search"></div>
+        <div id="light-vault-profile" class="workspace-sidedock-vault-profile">
+          <div id="light-vault-switcher" class="workspace-drawer-vault-switcher" tabindex="0">
+            <span class="workspace-drawer-vault-switcher-icon">⌃⌄</span>
+            <span class="workspace-drawer-vault-name">Notes</span>
+          </div>
+          <div id="light-vault-actions" class="workspace-drawer-vault-actions">
+            <button id="light-vault-help" class="clickable-icon" aria-label="Help">?</button>
+            <button class="clickable-icon" aria-label="Settings">⚙</button>
+          </div>
+        </div>
       </aside>
       <footer class="status-bar">Status</footer>
       <div class="menu"><div class="menu-item is-selected">Menu item</div></div>
@@ -58,11 +161,32 @@
       <div class="tooltip">Tooltip</div>
       <div id="light-notice" class="notice">Light notification</div>
     </main>
-    <main id="dark-root" class="theme-dark">
+    <main id="dark-root" class="theme-dark workspace is-fullscreen">
       <header class="titlebar"><button class="clickable-icon" aria-label="Sidebar">◫</button></header>
-      <nav class="workspace-ribbon">Ribbon</nav>
-      <div class="workspace-tab-header-container">
-        <div class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
+      <nav class="workspace-ribbon mod-left">
+        <div class="side-dock-actions">
+          <button id="dark-ribbon-button" class="clickable-icon side-dock-ribbon-action" aria-label="Graph">◇</button>
+        </div>
+      </nav>
+      <div class="workspace-split mod-root">
+        <div class="workspace-tab-header-container">
+          <div class="workspace-tab-header-container-inner">
+            <div id="dark-tab-active" class="workspace-tab-header is-active"><span class="workspace-tab-header-inner-title">Active</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="view-header">
+        <div id="dark-nav-group" class="view-header-nav-buttons">
+          <button class="clickable-icon" aria-disabled="true">←</button>
+          <button class="clickable-icon" aria-disabled="true">→</button>
+        </div>
+        <div class="view-header-title-container">
+          <div id="dark-view-title" class="view-header-title" tabindex="0">Liquid Notes</div>
+        </div>
+        <div id="dark-view-actions" class="view-actions">
+          <button id="dark-view-active" class="clickable-icon is-active">⌘</button>
+          <button class="clickable-icon">•••</button>
+        </div>
       </div>
       <section id="dark-canvas" class="workspace-leaf-content">
         <div class="markdown-source-view mod-cm6">
@@ -93,9 +217,26 @@
         <section class="setting-item"><div class="setting-item-control"><input type="text" value="Liquid Notes"><button>Apply</button><button id="dark-cta" class="mod-cta">Install</button></div></section>
       </section>
       <aside id="dark-sidebar" class="workspace-split mod-left-split">
+        <div id="dark-folder-collapsed" class="tree-item nav-folder is-collapsed">
+          <div class="tree-item-self nav-folder-title is-active"><span class="nav-folder-title-content">Collapsed</span></div>
+        </div>
+        <div id="dark-folder-open" class="tree-item nav-folder">
+          <div class="tree-item-self nav-folder-title"><span class="nav-folder-title-content">Open</span></div>
+        </div>
         <div class="nav-file-title is-active">File</div>
         <div class="search-input-container"><input type="search" placeholder="Search"></div>
+        <div id="dark-vault-profile" class="workspace-sidedock-vault-profile">
+          <div id="dark-vault-switcher" class="workspace-drawer-vault-switcher" tabindex="0">
+            <span class="workspace-drawer-vault-switcher-icon">⌃⌄</span>
+            <span class="workspace-drawer-vault-name">Notes</span>
+          </div>
+          <div id="dark-vault-actions" class="workspace-drawer-vault-actions">
+            <button id="dark-vault-help" class="clickable-icon" aria-label="Help">?</button>
+            <button class="clickable-icon" aria-label="Settings">⚙</button>
+          </div>
+        </div>
       </aside>
+      <aside id="dark-right-sidebar" class="workspace-split mod-right-split">Right sidebar</aside>
       <footer class="status-bar">Status</footer>
       <div class="menu"><div class="menu-item is-selected">Menu item</div></div>
       <div class="modal"><div class="modal-title">Modal</div></div>
@@ -109,6 +250,7 @@
       focusTarget.focus();
 
       const style = (selector) => getComputedStyle(document.querySelector(selector));
+      const pseudoStyle = (selector, pseudo) => getComputedStyle(document.querySelector(selector), pseudo);
       const custom = (selector, property) => style(selector).getPropertyValue(property).trim().toLowerCase();
 
       const expectCustom = (selector, property, expected) => {
@@ -144,6 +286,11 @@
         if (!Number.isFinite(actual) || actual > maximum) failures.push(`${selector} ${property}: expected at most ${maximum}px, got ${style(selector)[property]}`);
       };
 
+      const expectRectPixels = (selector, dimension, expected) => {
+        const actual = document.querySelector(selector).getBoundingClientRect()[dimension];
+        if (Math.abs(actual - expected) > 0.01) failures.push(`${selector} rect ${dimension}: expected ${expected}px, got ${actual}px`);
+      };
+
       const expectSameColor = (leftSelector, rightSelector) => {
         const left = style(leftSelector).color;
         const right = style(rightSelector).color;
@@ -165,9 +312,41 @@
         if (!actual.includes(expected.toLowerCase())) failures.push(`${selector} ${property}: expected to include ${expected}, got ${actual}`);
       };
 
+      const expectStyleExcludes = (selector, property, unexpected) => {
+        const actual = style(selector)[property].toLowerCase();
+        if (actual.includes(unexpected.toLowerCase())) failures.push(`${selector} ${property}: expected not to include ${unexpected}, got ${actual}`);
+      };
+
       const expectStyle = (selector, property, expected) => {
         const actual = style(selector)[property].toLowerCase();
         if (actual !== expected.toLowerCase()) failures.push(`${selector} ${property}: expected ${expected}, got ${actual}`);
+      };
+
+      const expectPseudoStyle = (selector, pseudo, property, expected) => {
+        const actual = pseudoStyle(selector, pseudo)[property].toLowerCase();
+        if (actual !== expected.toLowerCase()) failures.push(`${selector}${pseudo} ${property}: expected ${expected}, got ${actual}`);
+      };
+
+      const expectPseudoStyleExcludes = (selector, pseudo, property, unexpected) => {
+        const actual = pseudoStyle(selector, pseudo)[property].toLowerCase();
+        if (actual.includes(unexpected.toLowerCase())) failures.push(`${selector}${pseudo} ${property}: expected not to include ${unexpected}, got ${actual}`);
+      };
+
+      const expectPseudoStyleNot = (selector, pseudo, property, unexpected) => {
+        const actual = pseudoStyle(selector, pseudo)[property].toLowerCase();
+        if (actual === unexpected.toLowerCase()) failures.push(`${selector}${pseudo} ${property}: expected a value other than ${unexpected}`);
+      };
+
+      const expectDifferentPseudoProperty = (leftSelector, rightSelector, pseudo, property) => {
+        const left = pseudoStyle(leftSelector, pseudo)[property];
+        const right = pseudoStyle(rightSelector, pseudo)[property];
+        if (left === right) failures.push(`${leftSelector}${pseudo} and ${rightSelector}${pseudo} share ${property}: ${left}`);
+      };
+
+      const expectPseudoSameColor = (selector, pseudo) => {
+        const actual = pseudoStyle(selector, pseudo).color;
+        const expected = style(selector).color;
+        if (actual !== expected) failures.push(`${selector}${pseudo} color: expected ${expected}, got ${actual}`);
       };
 
       const relativeLuminance = (cssColor) => {
@@ -198,18 +377,128 @@
       expectNotTransparent("#dark-root .titlebar");
       expectNotTransparent("#light-root .workspace-tab-header.is-active");
       expectNotTransparent("#dark-root .workspace-tab-header.is-active");
-      expectMinPixels("#light-root .workspace-tab-header.is-active", "borderRadius", 7);
+      expectMinPixels("#light-root .mod-root .workspace-tab-header.is-active", "borderRadius", 14);
+      for (const selector of ["#light-tab-active", "#light-tab-inactive"]) {
+        for (const pseudo of ["::before", "::after"]) {
+          expectPseudoStyle(selector, pseudo, "content", "none");
+          expectPseudoStyle(selector, pseudo, "boxShadow", "none");
+          expectPseudoStyle(selector, pseudo, "clipPath", "none");
+        }
+      }
+      if (window.innerWidth > 800) {
+        expectRectPixels("#light-tab-active", "height", 28);
+        expectRectPixels("#light-tab-inactive", "height", 28);
+      }
+      expectStyleIncludes("#light-tab-active", "boxShadow", "0px 1px 3px");
+      expectStyleExcludes("#light-tab-active", "boxShadow", "0px 2px 8px");
+      expectStyleIncludes("#dark-tab-active", "boxShadow", "0px 1px 4px");
+      expectStyleExcludes("#dark-tab-active", "boxShadow", "0px 2px 10px");
+      expectStyle("#light-tab-inactive", "boxShadow", "none");
+      for (const selector of ["#light-file-toolbar", "#light-git-toolbar", "#light-nav-group", "#light-view-actions", "#dark-nav-group", "#dark-view-actions"]) {
+        expectNotTransparent(selector);
+        expectMinPixels(selector, "borderRadius", 14);
+        expectMinPixels(selector, "borderTopWidth", 1);
+        expectStyleExcludes(selector, "boxShadow", "none");
+        expectStyle(selector, "flexShrink", "0");
+      }
+      for (const selector of [
+        "#light-vault-switcher",
+        "#light-vault-actions",
+        "#dark-vault-switcher",
+        "#dark-vault-actions",
+      ]) {
+        expectNotTransparent(selector);
+        expectMinPixels(selector, "borderRadius", 14);
+        expectMinPixels(selector, "borderTopWidth", 1);
+        expectStyleExcludes(selector, "boxShadow", "none");
+      }
+      for (const selector of ["#light-file-action", "#light-git-action", "#light-nav-back", "#light-view-menu"]) {
+        expectStyle(selector, "boxShadow", "none");
+      }
+      if (window.innerWidth > 800) {
+        for (const selector of [
+          "#light-file-toolbar",
+          "#light-git-toolbar",
+          "#light-nav-group",
+          "#light-view-actions",
+          "#dark-nav-group",
+          "#dark-view-actions",
+        ]) {
+          expectStyle(selector, "height", "28px");
+          expectRectPixels(selector, "height", 28);
+        }
+        for (const selector of ["#light-file-action", "#light-git-action", "#light-nav-back", "#light-view-menu"]) {
+          expectRectPixels(selector, "width", 26);
+          expectRectPixels(selector, "height", 26);
+        }
+        for (const selector of ["#light-vault-switcher", "#light-vault-actions", "#dark-vault-switcher", "#dark-vault-actions"]) {
+          expectRectPixels(selector, "height", 28);
+        }
+        expectRectPixels("#light-vault-help", "width", 26);
+        expectRectPixels("#light-vault-help", "height", 26);
+      }
+      expectMinPixels("#light-view-title", "borderRadius", 14);
+      expectMinPixels("#dark-view-title", "borderRadius", 14);
+      expectStyle("#light-view-active", "color", "rgb(0, 122, 255)");
+      expectStyle("#dark-view-active", "color", "rgb(10, 132, 255)");
+      expectStyle("#light-view-active", "transform", "none");
       expectNotTransparent("#light-root .nav-file-title.is-active");
       expectMinPixels("#light-root .nav-file-title.is-active", "borderRadius", 7);
+      expectStyleIncludes("#light-folder-collapsed .nav-folder-title-content", "display", "flex");
+      expectPseudoSameColor("#light-folder-collapsed .nav-folder-title-content", "::before");
+      expectPseudoSameColor("#dark-folder-open .nav-folder-title-content", "::before");
+      expectPseudoStyleNot("#light-folder-collapsed .nav-folder-title-content", "::before", "maskImage", "none");
+      expectPseudoStyleNot("#light-folder-open .nav-folder-title-content", "::before", "maskImage", "none");
+      expectDifferentPseudoProperty(
+        "#light-folder-collapsed .nav-folder-title-content",
+        "#light-folder-open .nav-folder-title-content",
+        "::before",
+        "maskImage",
+      );
+      for (const selector of ["#light-folder-collapsed .nav-folder-title-content", "#light-folder-open .nav-folder-title-content"]) {
+        expectPseudoStyle(selector, "::before", "borderTopStyle", "none");
+        expectPseudoStyle(selector, "::before", "boxShadow", "none");
+        expectPseudoStyle(selector, "::before", "clipPath", "none");
+        expectPseudoStyle(selector, "::before", "backgroundImage", "none");
+      }
       expectMinPixels("#light-root .search-input-container input", "borderRadius", 7);
       expectMinPixels("#light-toolbar-button", "width", 28);
       expectMinPixels("#light-toolbar-button", "height", 28);
+      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        expectStyleIncludes("#light-ribbon-button", "transitionDuration", "0.07s");
+      }
+      expectStyle("#light-ribbon-button", "transitionProperty", "color");
+      expectStyle("#light-ribbon-button", "backgroundColor", "rgba(0, 0, 0, 0)");
+      expectStyle("#light-ribbon-button", "backgroundImage", "none");
+      expectStyle("#light-ribbon-button", "boxShadow", "none");
+      expectStyle("#light-ribbon-button", "filter", "none");
+      expectStyle("#light-ribbon-button", "transform", "none");
+      expectStyle("#light-ribbon-button .svg-icon", "filter", "none");
+      expectStyle("#light-ribbon-button .svg-icon", "boxShadow", "none");
+      expectPseudoStyle("#light-ribbon-button", "::before", "content", "none");
+      expectPseudoStyle("#light-ribbon-button", "::after", "content", "none");
+      expectStyle("#light-ribbon-active", "backgroundColor", "rgba(0, 0, 0, 0)");
+      expectStyle("#light-ribbon-active", "transform", "none");
       if (!focusTarget.matches(":focus-visible")) failures.push("#light-toolbar-button: expected :focus-visible after keyboard-style autofocus");
       expectMinPixels("#light-toolbar-button", "outlineWidth", 2);
+      const groupedFocusTarget = document.querySelector("#light-view-menu");
+      groupedFocusTarget.focus();
+      if (!groupedFocusTarget.matches(":focus-visible")) failures.push("#light-view-menu: expected :focus-visible after keyboard focus");
+      expectMinPixels("#light-view-menu", "outlineWidth", 2);
+      expectMaxPixels("#light-view-menu", "outlineOffset", -2);
       expectNotTransparent("#light-root .status-bar");
       expectNotTransparent("#light-root .menu");
       expectNotTransparent("#light-root .modal");
       expectNotTransparent("#light-root .tooltip");
+      expectStyle("#dark-root .workspace-ribbon", "backgroundColor", "rgb(36, 36, 38)");
+      expectStyle("#dark-sidebar", "backgroundColor", "rgb(36, 36, 38)");
+      expectStyle("#dark-right-sidebar", "backgroundColor", "rgb(36, 36, 38)");
+      expectStyle("#dark-root .workspace-ribbon", "backdropFilter", "none");
+      expectStyle("#dark-sidebar", "backdropFilter", "none");
+      expectStyle("#dark-right-sidebar", "backdropFilter", "none");
+      if (!matchMedia("(prefers-reduced-transparency: reduce)").matches) {
+        expectStyleIncludes("#light-sidebar", "backdropFilter", "blur(");
+      }
       expectStyle("#light-notice", "backgroundColor", "rgb(29, 29, 31)");
       expectStyle("#light-notice", "color", "rgb(255, 255, 255)");
       expectStyle("#dark-notice", "backgroundColor", "rgb(245, 245, 247)");
@@ -255,7 +544,9 @@
       expectNotTransparent("#light-root .graph-controls");
       expectNotTransparent("#light-root .pdf-toolbar");
       expectStyle("#light-root .canvas-node-container", "backdropFilter", "none");
-      expectStyleIncludes("#light-root .canvas-controls", "backdropFilter", "blur(");
+      if (!matchMedia("(prefers-reduced-transparency: reduce)").matches) {
+        expectStyleIncludes("#light-root .canvas-controls", "backdropFilter", "blur(");
+      }
       expectNotTransparent("#light-root .vertical-tab-header");
       expectNotTransparent("#light-root .setting-item-control input");
       expectNotTransparent("#light-root .setting-item-control button");
@@ -265,17 +556,35 @@
 
       if (window.innerWidth <= 800) {
         expectMinPixels("#light-toolbar-button", "height", 44);
+        for (const selector of ["#light-file-toolbar", "#light-git-toolbar", "#light-nav-group", "#light-view-actions"]) {
+          expectRectPixels(selector, "height", 46);
+        }
+        for (const selector of ["#light-file-action", "#light-git-action", "#light-nav-back", "#light-view-menu"]) {
+          expectRectPixels(selector, "width", 44);
+          expectRectPixels(selector, "height", 44);
+        }
+        expectRectPixels("#light-vault-switcher", "height", 46);
+        expectRectPixels("#light-vault-actions", "height", 46);
+        expectRectPixels("#light-vault-help", "width", 44);
+        expectRectPixels("#light-vault-help", "height", 44);
         expectMinPixels("#mobile-action", "height", 44);
         expectStyleIncludes("#light-sidebar", "backdropFilter", "blur(14px)");
       }
 
       if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
         expectStyleIncludes("#light-toolbar-button", "transitionDuration", "0s");
+        expectStyleIncludes("#light-ribbon-button", "transitionDuration", "0s");
       }
 
       if (matchMedia("(prefers-reduced-transparency: reduce)").matches) {
         for (const selector of [
           "#light-sidebar",
+          "#light-file-toolbar",
+          "#light-git-toolbar",
+          "#light-nav-group",
+          "#light-view-actions",
+          "#light-vault-switcher",
+          "#light-vault-actions",
           "#light-root .canvas-controls",
           "#light-root .canvas-card-menu",
           "#light-root .graph-controls",
@@ -286,13 +595,36 @@
         }
       }
 
-      document.querySelector("#test-results").textContent = JSON.stringify({
-        failures,
-        media: {
-          reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,
-          reducedTransparency: matchMedia("(prefers-reduced-transparency: reduce)").matches,
-        },
-      });
+      const expectMaskDecodes = async (selector, pseudo = "::before") => {
+        const mask = pseudoStyle(selector, pseudo).maskImage;
+        const url = mask.match(/^url\(["']?(.*?)["']?\)$/)?.[1];
+        if (!url) {
+          failures.push(`${selector}${pseudo} maskImage: expected a data URL, got ${mask}`);
+          return;
+        }
+        const image = new Image();
+        image.src = url;
+        try {
+          await image.decode();
+        } catch (error) {
+          failures.push(`${selector}${pseudo} mask image failed to decode: ${error.message}`);
+        }
+      };
+
+      const finish = async () => {
+        await Promise.all([
+          expectMaskDecodes("#light-folder-collapsed .nav-folder-title-content"),
+          expectMaskDecodes("#light-folder-open .nav-folder-title-content"),
+        ]);
+        document.querySelector("#test-results").textContent = JSON.stringify({
+          failures,
+          media: {
+            reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,
+            reducedTransparency: matchMedia("(prefers-reduced-transparency: reduce)").matches,
+          },
+        });
+      };
+      void finish();
     </script>
   </body>
 </html>

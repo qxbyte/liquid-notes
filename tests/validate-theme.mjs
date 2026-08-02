@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { access, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
@@ -11,13 +11,57 @@ const read = (name) => readFile(path.join(root, name), "utf8");
 const manifest = JSON.parse(await read("manifest.json"));
 assert.deepEqual(manifest, {
   name: "Liquid Notes",
-  version: "1.0.0",
+  version: "1.0.1",
   minAppVersion: "1.12.7",
   author: "qxbyte",
   authorUrl: "https://github.com/qxbyte",
 });
 
 const css = await read("theme.css");
+assert.match(css, /Lucide Icons v1\.27\.0/i, "Distributed theme.css must pin the embedded Lucide icon version");
+assert.match(
+  css,
+  /4aec3f892fd6c23063bc2fead83c899b5d412b1c/i,
+  "Distributed theme.css must pin the embedded Lucide source commit",
+);
+assert.match(css, /ISC License/i, "Distributed theme.css must carry the Lucide ISC license");
+assert.match(
+  css,
+  /Copyright \(c\) 2026 Lucide Icons and Contributors/i,
+  "Distributed theme.css must carry Lucide's pinned copyright notice",
+);
+assert.match(
+  css,
+  /Permission to use, copy, modify, and\/or distribute this software/i,
+  "Distributed theme.css must carry Lucide's ISC permission notice",
+);
+const encodedSvgNamespace = "xmlns=%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27";
+assert.equal(
+  css.split(encodedSvgNamespace).length - 1,
+  2,
+  "Both embedded Lucide folder masks must carry a percent-encoded SVG namespace",
+);
+assert.match(
+  css,
+  /\.workspace-ribbon\s+\.clickable-icon\.side-dock-ribbon-action:hover\s*\{[^}]*background-color:\s*transparent/i,
+  "Ribbon hover must remain on one stable transparent layer",
+);
+assert.match(
+  css,
+  /\.workspace-ribbon\s+\.clickable-icon\.side-dock-ribbon-action:is\(\s*:active,\s*\.is-active\s*\)\s*\{[^}]*background-color:\s*transparent/i,
+  "Ribbon active states must use color instead of a flashing background layer",
+);
+assert.match(
+  css,
+  /\.workspace\s+\.mod-root\s+\.workspace-tab-header:hover\s*\{[^}]*box-shadow:\s*none/i,
+  "Root tab hover must not create a diffuse shadow",
+);
+const fullscreenSidebarRule = css.match(/\.is-fullscreen\s+\.workspace-ribbon,[^{]+\{([^}]*)\}/i)?.[1] ?? "";
+assert.match(
+  fullscreenSidebarRule,
+  /-webkit-backdrop-filter:\s*none;/i,
+  "Fullscreen sidebar surfaces must disable WebKit blur",
+);
 assert.doesNotMatch(css, /@import|https?:\/\//i, "theme.css must not load remote resources");
 assert.doesNotMatch(css, /\/Users\/|[A-Z]:\\/i, "theme.css must not contain private paths");
 assert.doesNotMatch(css, /!important/i, "theme.css must remain user-overridable without !important");
@@ -35,6 +79,11 @@ assert.ok(reducedTransparencyStart >= 0 && reducedMotionStart > reducedTranspare
 const reducedTransparencyBlock = css.slice(reducedTransparencyStart, reducedMotionStart);
 for (const selector of [
   ".workspace-split.mod-left-split",
+  ".nav-buttons-container",
+  ".view-header-nav-buttons",
+  ".view-actions",
+  ".workspace-drawer-vault-switcher",
+  ".workspace-drawer-vault-actions",
   ".canvas-controls",
   ".canvas-card-menu",
   ".graph-controls",
@@ -45,6 +94,26 @@ for (const selector of [
 }
 assert.match(reducedTransparencyBlock, /-webkit-backdrop-filter:\s*none;/, "Reduced-transparency fallback must disable WebKit blur");
 assert.match(reducedTransparencyBlock, /(?:^|\n)\s*backdrop-filter:\s*none;/, "Reduced-transparency fallback must disable standard blur");
+
+const unsupportedBlurStart = css.indexOf("@supports not ((backdrop-filter: blur(1px))");
+const reducedTransparencyMediaStart = css.indexOf("@media (prefers-reduced-transparency: reduce)", unsupportedBlurStart);
+assert.ok(unsupportedBlurStart >= 0 && reducedTransparencyMediaStart > unsupportedBlurStart, "Unsupported-blur fallback block must exist");
+const unsupportedBlurBlock = css.slice(unsupportedBlurStart, reducedTransparencyMediaStart);
+for (const selector of [
+  ".nav-buttons-container",
+  ".view-header-nav-buttons",
+  ".view-actions",
+  ".workspace-drawer-vault-switcher",
+  ".workspace-drawer-vault-actions",
+]) {
+  assert.ok(unsupportedBlurBlock.includes(selector), `Unsupported-blur fallback must cover ${selector}`);
+}
+
+const contrastStart = css.indexOf("@media (prefers-contrast: more)");
+const compactLayoutStart = css.indexOf("@media (max-width: 800px)", contrastStart);
+assert.ok(contrastStart >= 0 && compactLayoutStart > contrastStart, "High-contrast block must exist");
+const contrastBlock = css.slice(contrastStart, compactLayoutStart);
+assert.match(contrastBlock, /--ln-control-group-border:\s*currentColor;/, "High contrast must strengthen control-group borders");
 
 const chromeCandidates = [
   process.env.CHROME_BIN,
@@ -70,6 +139,7 @@ const runBrowserFixture = (label, extraArguments = []) => {
       "--no-first-run",
       "--no-default-browser-check",
       ...extraArguments,
+      "--virtual-time-budget=1000",
       "--dump-dom",
       `file://${path.join(root, "tests/render-fixture.html")}`,
     ], { encoding: "utf8", maxBuffer: 10 * 1024 * 1024, timeout: 30_000 });
@@ -92,13 +162,112 @@ const runBrowserFixture = (label, extraArguments = []) => {
   if (label === "reduced motion") assert.equal(computedStyleResult.media.reducedMotion, true, "Chrome must emulate reduced motion");
 };
 
+const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+const requestJson = (url) => new Promise((resolve, reject) => {
+  fetch(url).then((response) => response.json()).then(resolve, reject);
+});
+
+const runReducedTransparencyFixture = async () => {
+  const profileDirectory = await mkdtemp(path.join(tmpdir(), "liquid-notes-chrome-"));
+  const port = 9223;
+  const browser = spawn(chromeBinary, [
+    "--headless=new",
+    "--no-sandbox",
+    "--disable-gpu",
+    "--disable-background-networking",
+    "--disable-extensions",
+    "--no-first-run",
+    "--no-default-browser-check",
+    "--window-size=1280,900",
+    `--user-data-dir=${profileDirectory}`,
+    `--remote-debugging-port=${port}`,
+    "about:blank",
+  ]);
+
+  try {
+    let browserVersion;
+    for (let attempt = 0; attempt < 50; attempt += 1) {
+      try {
+        browserVersion = await requestJson(`http://127.0.0.1:${port}/json/version`);
+        break;
+      } catch {
+        await wait(100);
+      }
+    }
+    assert.ok(browserVersion, "Reduced-transparency: Chrome DevTools endpoint did not start");
+
+    const socket = new WebSocket(browserVersion.webSocketDebuggerUrl);
+    await new Promise((resolve, reject) => {
+      socket.addEventListener("open", resolve, { once: true });
+      socket.addEventListener("error", reject, { once: true });
+    });
+    let nextId = 1;
+    const command = (method, params = {}, sessionId) => new Promise((resolve, reject) => {
+      const id = nextId++;
+      const onMessage = ({ data }) => {
+        const message = JSON.parse(data);
+        if (message.id !== id) return;
+        socket.removeEventListener("message", onMessage);
+        if (message.error) reject(new Error(`${method}: ${message.error.message}`));
+        else resolve(message.result);
+      };
+      socket.addEventListener("message", onMessage);
+      socket.send(JSON.stringify({ id, method, params, ...(sessionId ? { sessionId } : {}) }));
+    });
+
+    const { targetId } = await command("Target.createTarget", { url: "about:blank" });
+    const { sessionId } = await command("Target.attachToTarget", { targetId, flatten: true });
+    await command("Emulation.setEmulatedMedia", {
+      features: [{ name: "prefers-reduced-transparency", value: "reduce" }],
+    }, sessionId);
+    await command("Page.enable", {}, sessionId);
+    await command("Page.navigate", { url: `file://${path.join(root, "tests/render-fixture.html")}` }, sessionId);
+
+    let result;
+    for (let attempt = 0; attempt < 50; attempt += 1) {
+      const evaluation = await command("Runtime.evaluate", {
+        expression: "document.querySelector('#test-results')?.textContent",
+        returnByValue: true,
+      }, sessionId);
+      if (evaluation.result.value && evaluation.result.value !== "pending") {
+        result = JSON.parse(evaluation.result.value);
+        break;
+      }
+      await wait(100);
+    }
+    assert.ok(result, "Reduced-transparency: Browser fixture did not emit test results");
+    assert.deepEqual(result.failures, [], `reduced transparency\n${result.failures.join("\n")}`);
+    assert.equal(result.media.reducedTransparency, true, "Chrome must emulate reduced transparency");
+    socket.close();
+  } finally {
+    browser.kill();
+    await rm(profileDirectory, { recursive: true, force: true });
+  }
+};
+
 runBrowserFixture("desktop", ["--window-size=1280,900"]);
 runBrowserFixture("mobile", ["--window-size=760,900"]);
 runBrowserFixture("reduced motion", ["--force-prefers-reduced-motion"]);
+await runReducedTransparencyFixture();
 
 const thirdPartyNotices = await read("THIRD_PARTY_NOTICES.md");
 assert.match(thirdPartyNotices, /Lucide/i, "Icon notice must identify Lucide");
 assert.match(thirdPartyNotices, /ISC License/i, "Icon notice must include Lucide's ISC license");
+assert.match(thirdPartyNotices, /v1\.27\.0/i, "Icon notice must pin the Lucide source version");
+assert.match(
+  thirdPartyNotices,
+  /4aec3f892fd6c23063bc2fead83c899b5d412b1c/i,
+  "Icon notice must pin the Lucide source commit",
+);
+assert.match(
+  thirdPartyNotices,
+  /Copyright \(c\) 2026 Lucide Icons and Contributors/i,
+  "Icon notice must match the pinned Lucide copyright notice",
+);
+
+const readme = await read("README.md");
+assert.match(readme, /embed(?:s|ded) Lucide `folder` and `folder-open` masks/i, "README must accurately attribute embedded folder icons");
+assert.match(readme, /document mark as an original CSS shape/i, "README must identify the remaining original CSS icon");
 
 const showcase = await read("tests/showcase.md");
 for (const language of ["swift", "javascript", "python", "json", "bash", "css"]) {

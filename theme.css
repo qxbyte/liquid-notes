@@ -1,6 +1,26 @@
 /*
- * Liquid Notes 1.0.0
+ * Liquid Notes 1.0.1
  * A calm, macOS-inspired Liquid Glass theme for Obsidian.
+ *
+ * Embedded icon notice
+ * Lucide Icons v1.27.0, commit 4aec3f892fd6c23063bc2fead83c899b5d412b1c
+ * folder and folder-open SVG paths
+ *
+ * ISC License
+ *
+ * Copyright (c) 2026 Lucide Icons and Contributors
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+ * SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
+ * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+ * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 body {
@@ -16,6 +36,8 @@ body {
   --ln-blur: 24px;
   --ln-blur-strong: 36px;
   --ln-transition: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ln-transition-fast: 70ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ln-transition-control: 100ms cubic-bezier(0.2, 0.8, 0.2, 1);
 
   --radius-s: var(--ln-radius-xs);
   --radius-m: var(--ln-radius-sm);
@@ -41,6 +63,8 @@ body {
   --ln-control: rgba(255, 255, 255, 0.72);
   --ln-control-hover: rgba(255, 255, 255, 0.94);
   --ln-control-active: rgba(0, 122, 255, 0.14);
+  --ln-control-group: rgba(255, 255, 255, 0.66);
+  --ln-control-group-border: rgba(60, 60, 67, 0.18);
   --ln-border: rgba(60, 60, 67, 0.18);
   --ln-border-hover: rgba(60, 60, 67, 0.28);
   --ln-separator: rgba(60, 60, 67, 0.14);
@@ -50,6 +74,9 @@ body {
   --ln-selection: rgba(0, 122, 255, 0.16);
   --ln-shadow: 0 10px 34px rgba(40, 40, 50, 0.12), 0 1px 2px rgba(40, 40, 50, 0.08);
   --ln-shadow-control: 0 1px 1px rgba(0, 0, 0, 0.05), inset 0 1px rgba(255, 255, 255, 0.82);
+  --ln-shadow-floating-control: 0 2px 8px rgba(40, 40, 50, 0.1), inset 0 1px rgba(255, 255, 255, 0.86);
+  --ln-shadow-compact-control: 0 1px 4px rgba(40, 40, 50, 0.09), inset 0 1px rgba(255, 255, 255, 0.86);
+  --ln-shadow-tab: 0 1px 3px rgba(40, 40, 50, 0.1), inset 0 1px rgba(255, 255, 255, 0.9);
   --ln-highlight: inset 0 1px rgba(255, 255, 255, 0.72);
   --ln-notice-background: var(--ln-text);
   --ln-notice-text: var(--ln-canvas);
@@ -124,6 +151,8 @@ body {
   --ln-control: rgba(118, 118, 128, 0.18);
   --ln-control-hover: rgba(118, 118, 128, 0.28);
   --ln-control-active: rgba(10, 132, 255, 0.24);
+  --ln-control-group: rgba(58, 58, 62, 0.72);
+  --ln-control-group-border: rgba(235, 235, 245, 0.18);
   --ln-border: rgba(235, 235, 245, 0.18);
   --ln-border-hover: rgba(235, 235, 245, 0.3);
   --ln-separator: rgba(84, 84, 88, 0.6);
@@ -133,6 +162,9 @@ body {
   --ln-selection: rgba(10, 132, 255, 0.24);
   --ln-shadow: 0 14px 42px rgba(0, 0, 0, 0.34), 0 1px 3px rgba(0, 0, 0, 0.28);
   --ln-shadow-control: 0 1px 2px rgba(0, 0, 0, 0.2), inset 0 1px rgba(255, 255, 255, 0.08);
+  --ln-shadow-floating-control: 0 2px 10px rgba(0, 0, 0, 0.28), inset 0 1px rgba(255, 255, 255, 0.09);
+  --ln-shadow-compact-control: 0 1px 5px rgba(0, 0, 0, 0.22), inset 0 1px rgba(255, 255, 255, 0.08);
+  --ln-shadow-tab: 0 1px 4px rgba(0, 0, 0, 0.24), inset 0 1px rgba(255, 255, 255, 0.08);
   --ln-highlight: inset 0 1px rgba(255, 255, 255, 0.08);
   --ln-notice-background: var(--ln-text);
   --ln-notice-text: var(--ln-canvas);
@@ -209,6 +241,15 @@ body {
   backdrop-filter: saturate(1.35) blur(var(--ln-blur));
 }
 
+.is-fullscreen .workspace-ribbon,
+.is-fullscreen .workspace-split.mod-left-split,
+.is-fullscreen .workspace-split.mod-right-split {
+  --ribbon-background: var(--background-secondary-alt);
+  background-color: var(--background-secondary-alt);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
 /* macOS window chrome ------------------------------------------------------ */
 
 .titlebar,
@@ -249,6 +290,44 @@ body.is-focused .titlebar {
   gap: 3px;
 }
 
+.workspace-ribbon .clickable-icon.side-dock-ribbon-action {
+  overflow: hidden;
+  border-color: transparent;
+  border-radius: var(--ln-radius-pill);
+  background: transparent;
+  box-shadow: none;
+  filter: none;
+  transform: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  transition: color var(--ln-transition-fast);
+}
+
+.workspace-ribbon .clickable-icon.side-dock-ribbon-action:hover {
+  color: var(--icon-color-hover);
+  background-color: transparent;
+}
+
+.workspace-ribbon .clickable-icon.side-dock-ribbon-action:is(:active, .is-active) {
+  color: var(--icon-color-active);
+  background-color: transparent;
+  transform: none;
+}
+
+.workspace-ribbon .clickable-icon.side-dock-ribbon-action::before,
+.workspace-ribbon .clickable-icon.side-dock-ribbon-action::after {
+  content: none;
+  background: transparent;
+  box-shadow: none;
+  filter: none;
+}
+
+.workspace-ribbon .clickable-icon.side-dock-ribbon-action > .svg-icon {
+  background: transparent;
+  box-shadow: none;
+  filter: none;
+}
+
 .clickable-icon {
   width: 30px;
   height: 30px;
@@ -261,11 +340,10 @@ body.is-focused .titlebar {
   background-color: transparent;
   box-shadow: none;
   transition:
-    color var(--ln-transition),
-    background-color var(--ln-transition),
-    border-color var(--ln-transition),
-    box-shadow var(--ln-transition),
-    transform var(--ln-transition);
+    color var(--ln-transition-control),
+    background-color var(--ln-transition-control),
+    border-color var(--ln-transition-control),
+    transform var(--ln-transition-control);
 }
 
 .clickable-icon:hover {
@@ -273,11 +351,16 @@ body.is-focused .titlebar {
   background-color: var(--background-modifier-hover);
 }
 
-.clickable-icon:active,
-.clickable-icon.is-active {
+.clickable-icon:active {
   color: var(--icon-color-active);
   background-color: var(--ln-control-active);
   transform: scale(0.96);
+}
+
+.clickable-icon.is-active {
+  color: var(--icon-color-active);
+  background-color: var(--ln-control-active);
+  transform: none;
 }
 
 .clickable-icon:focus-visible,
@@ -296,6 +379,145 @@ textarea:focus-visible,
   stroke-width: 1.75;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+/* Xcode-style segmented toolbar controls -------------------------------- */
+
+:is(.nav-buttons-container, .view-header-nav-buttons, .view-actions) {
+  box-sizing: border-box;
+  display: flex;
+  width: max-content;
+  height: 28px;
+  min-height: 28px;
+  flex: 0 0 auto;
+  align-self: center;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--ln-control-group-border);
+  border-radius: var(--ln-radius-pill);
+  background-color: var(--ln-control-group);
+  box-shadow: var(--ln-shadow-compact-control);
+  -webkit-backdrop-filter: saturate(1.25) blur(18px);
+  backdrop-filter: saturate(1.25) blur(18px);
+}
+
+:is(.nav-buttons-container, .view-header-nav-buttons, .view-actions) > .clickable-icon {
+  box-sizing: border-box;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  min-height: 26px;
+  flex: 0 0 26px;
+  border: 0;
+  border-radius: var(--ln-radius-pill);
+  background-color: transparent;
+  box-shadow: none;
+}
+
+:is(.nav-buttons-container, .view-header-nav-buttons, .view-actions) > .clickable-icon:hover {
+  background-color: var(--background-modifier-hover);
+}
+
+:is(.nav-buttons-container, .view-header-nav-buttons, .view-actions) > .clickable-icon:focus-visible {
+  outline-offset: -3px;
+}
+
+:is(.nav-buttons-container, .view-header-nav-buttons, .view-actions) > .clickable-icon.is-active {
+  color: var(--icon-color-active);
+  background-color: var(--ln-control-active);
+}
+
+:is(.nav-buttons-container, .view-header-nav-buttons, .view-actions) > .clickable-icon[aria-disabled="true"] {
+  color: var(--text-faint);
+  background-color: transparent;
+  opacity: 0.48;
+  transform: none;
+}
+
+/* Vault footer capsules --------------------------------------------------- */
+
+.workspace-sidedock-vault-profile {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.workspace-drawer-vault-switcher,
+.workspace-drawer-vault-actions {
+  box-sizing: border-box;
+  display: flex;
+  height: 28px;
+  min-height: 28px;
+  align-items: center;
+  border: 1px solid var(--ln-control-group-border);
+  border-radius: var(--ln-radius-pill);
+  background-color: var(--ln-control-group);
+  box-shadow: var(--ln-shadow-compact-control);
+  -webkit-backdrop-filter: saturate(1.25) blur(18px);
+  backdrop-filter: saturate(1.25) blur(18px);
+}
+
+.workspace-drawer-vault-switcher {
+  min-width: 0;
+  flex: 1 1 auto;
+  gap: 7px;
+  padding: 0 9px;
+}
+
+body:not(.is-mobile) .workspace-split.mod-left-split .workspace-sidedock-vault-profile .workspace-drawer-vault-switcher {
+  border-radius: var(--ln-radius-pill);
+}
+
+.workspace-drawer-vault-actions {
+  flex: 0 0 auto;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.workspace-drawer-vault-actions > .clickable-icon {
+  box-sizing: border-box;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  min-height: 26px;
+  flex: 0 0 26px;
+  border: 0;
+  border-radius: var(--ln-radius-pill);
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.workspace-drawer-vault-switcher:hover,
+.workspace-drawer-vault-actions > .clickable-icon:hover {
+  background-color: var(--background-modifier-hover);
+}
+
+.workspace-drawer-vault-actions > .clickable-icon:focus-visible {
+  outline-offset: -3px;
+}
+
+.view-header-title {
+  min-height: 28px;
+  padding: 3px 9px;
+  border: 1px solid transparent;
+  border-radius: var(--ln-radius-pill);
+  background-color: transparent;
+  transition:
+    color var(--ln-transition-control),
+    background-color var(--ln-transition-control),
+    border-color var(--ln-transition-control);
+}
+
+.view-header-title:hover,
+.view-header-title:focus-within,
+.view-header-title.has-active-menu {
+  border-color: var(--ln-control-group-border);
+  background-color: var(--ln-control-group);
+  box-shadow: var(--ln-shadow-control);
 }
 
 /* Tabs -------------------------------------------------------------------- */
@@ -318,7 +540,7 @@ textarea:focus-visible,
   margin: 0;
   padding: 0 7px;
   border: 1px solid transparent;
-  border-radius: var(--ln-radius-sm);
+  border-radius: var(--ln-radius-pill);
   color: var(--text-muted);
   background-color: transparent;
   transition:
@@ -337,7 +559,38 @@ textarea:focus-visible,
   color: var(--text-normal);
   background-color: var(--ln-surface-strong);
   border-color: var(--ln-border);
-  box-shadow: var(--ln-shadow-control);
+  box-shadow: var(--ln-shadow-floating-control);
+}
+
+.workspace .mod-root .workspace-tab-header {
+  box-sizing: border-box;
+  min-height: 28px;
+  border-radius: var(--ln-radius-pill);
+}
+
+@media (min-width: 801px) {
+  .workspace .mod-root .workspace-tab-header {
+    height: 28px;
+  }
+}
+
+.workspace .mod-root .workspace-tab-header:hover {
+  border-color: color-mix(in srgb, var(--ln-control-group-border) 68%, transparent);
+  background-color: var(--background-modifier-hover);
+  box-shadow: none;
+}
+
+.workspace .mod-root .workspace-tab-header.is-active {
+  background-color: var(--ln-surface-strong);
+  border-color: var(--ln-border);
+  box-shadow: var(--ln-shadow-tab);
+}
+
+.workspace .mod-root .workspace-tab-header-container .workspace-tab-header::before,
+.workspace .mod-root .workspace-tab-header-container .workspace-tab-header::after {
+  content: none;
+  box-shadow: none;
+  clip-path: none;
 }
 
 .workspace-tab-header-inner {
@@ -359,11 +612,6 @@ textarea:focus-visible,
 
 .nav-header {
   padding: 7px 9px 4px;
-}
-
-.nav-buttons-container {
-  gap: 3px;
-  justify-content: flex-start;
 }
 
 .nav-files-container,
@@ -421,17 +669,35 @@ textarea:focus-visible,
   font-weight: 570;
 }
 
+.nav-folder.is-collapsed {
+  --ln-folder-icon: url("data:image/svg+xml,%3Csvg xmlns=%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27 viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z'/%3E%3C/svg%3E");
+}
+
+.nav-folder:not(.is-collapsed) {
+  --ln-folder-icon: url("data:image/svg+xml,%3Csvg xmlns=%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27 viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 0-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2'/%3E%3C/svg%3E");
+}
+
 .nav-folder-title-content::before {
-  width: 15px;
-  height: 11px;
+  display: block;
+  width: 16px;
+  height: 16px;
   flex: 0 0 auto;
   content: "";
-  border-radius: 2px 2px 3px 3px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.5), transparent 48%),
-    linear-gradient(180deg, #64d2ff, #0a84ff);
-  box-shadow: inset 0 0 0 0.5px rgba(0, 64, 128, 0.22), 0 1px 1px rgba(0, 64, 128, 0.12);
-  clip-path: polygon(0 18%, 34% 18%, 42% 0, 72% 0, 80% 18%, 100% 18%, 100% 100%, 0 100%);
+  border: 0;
+  border-radius: 0;
+  opacity: 0.72;
+  background-color: currentColor;
+  background-image: none;
+  box-shadow: none;
+  clip-path: none;
+  -webkit-mask-image: var(--ln-folder-icon);
+  mask-image: var(--ln-folder-icon);
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
 }
 
 .nav-file-title-content {
@@ -1254,6 +1520,7 @@ kbd,
   .theme-dark {
     --ln-border: currentColor;
     --ln-border-hover: currentColor;
+    --ln-control-group-border: currentColor;
     --ln-separator: color-mix(in srgb, currentColor 44%, transparent);
   }
 
@@ -1282,10 +1549,43 @@ kbd,
     min-height: 44px;
   }
 
+  :is(.nav-buttons-container, .view-header-nav-buttons, .view-actions) {
+    height: 46px;
+    min-height: 46px;
+    padding: 0;
+  }
+
+  :is(.nav-buttons-container, .view-header-nav-buttons, .view-actions) > .clickable-icon {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    flex-basis: 44px;
+  }
+
+  .workspace-drawer-vault-switcher,
+  .workspace-drawer-vault-actions {
+    height: 46px;
+    min-height: 46px;
+  }
+
+  .workspace-drawer-vault-actions > .clickable-icon {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    flex-basis: 44px;
+  }
+
   .workspace-split.mod-left-split,
   .workspace-split.mod-right-split,
   .titlebar,
   .workspace-tab-header-container,
+  .nav-buttons-container,
+  .view-header-nav-buttons,
+  .view-actions,
+  .workspace-drawer-vault-switcher,
+  .workspace-drawer-vault-actions,
   .status-bar,
   .menu,
   .modal,
@@ -1313,6 +1613,11 @@ kbd,
   .workspace-split.mod-right-split,
   .titlebar,
   .workspace-tab-header-container,
+  .nav-buttons-container,
+  .view-header-nav-buttons,
+  .view-actions,
+  .workspace-drawer-vault-switcher,
+  .workspace-drawer-vault-actions,
   .status-bar,
   .menu,
   .modal,
@@ -1331,6 +1636,11 @@ kbd,
   .workspace-split.mod-right-split,
   .titlebar,
   .workspace-tab-header-container,
+  .nav-buttons-container,
+  .view-header-nav-buttons,
+  .view-actions,
+  .workspace-drawer-vault-switcher,
+  .workspace-drawer-vault-actions,
   .status-bar,
   .menu,
   .modal,
@@ -1349,6 +1659,8 @@ kbd,
 @media (prefers-reduced-motion: reduce) {
   body {
     --ln-transition: 0ms linear;
+    --ln-transition-fast: 0ms linear;
+    --ln-transition-control: 0ms linear;
   }
 
   html {

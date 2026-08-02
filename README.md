@@ -65,7 +65,7 @@ Reload Obsidian and select **Liquid Notes** under **Settings → Appearance → 
 
 Liquid Notes follows Obsidian's semantic CSS variables first, then applies narrowly scoped component rules. The editor and reading canvas stay opaque for legibility; glass-like effects are limited to the functional layer. Third-party plugins inherit the theme through Obsidian variables wherever possible.
 
-The theme styles the Lucide icon elements already provided by Obsidian and adds original CSS folder/document marks. It does not include Apple SF Symbols, Apple fonts, or Apple Design Resources. See [Third-party notices](THIRD_PARTY_NOTICES.md).
+The theme styles the Lucide icon elements already provided by Obsidian, embeds Lucide `folder` and `folder-open` masks, and keeps its document mark as an original CSS shape. It does not include Apple SF Symbols, Apple fonts, or Apple Design Resources. See [Third-party notices](THIRD_PARTY_NOTICES.md).
 
 ## Development
 
